@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Providers } from "./provider/NextUIProvider";
 import { Kanit} from "next/font/google";
 import "./globals.css";
+import Sidebar from "@/components/ui/sidebar";
+import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 
 const kanit = Kanit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -24,10 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={kanit.className}>
         <div>
-          {/* Sidebar Here */}
-          <div className="h-screen bg-arom_white">          
-            <Providers>{children}</Providers>
-          </div>
+        <AdminPanelLayout>{children}</AdminPanelLayout>;
         </div>
       </body>
     </html>
