@@ -32,8 +32,7 @@ export default async function RootLayout({
         <div>
           <SidebarProvider defaultOpen={defaultOpen}>
             <AppSidebar />
-            <main className="px-[60px] py-[80px] h-screen w-screen bg-arom_white">
-              <SidebarTrigger />
+            <main className="px-[60px] py-[80px] h-screen w-full bg-arom_white">
               <Providers>{children}</Providers>
             </main>
           </SidebarProvider>
