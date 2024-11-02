@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Providers } from "./provider/NextUIProvider";
-import { Kanit} from "next/font/google";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { Kanit } from "next/font/google";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
-import { cookies } from "next/headers"
+import { cookies } from "next/headers";
 
 const kanit = Kanit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -24,22 +24,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies()
-  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
   return (
     <html lang="en">
       <body className={kanit.className}>
-        <div>
-          <SidebarProvider defaultOpen={defaultOpen} >
-            <AppSidebar />
-              <main>
+        <div className="h-screen w-screen bg-arom_white">
+          <Providers>
+            <SidebarProvider defaultOpen={defaultOpen}>
+              <AppSidebar />
+              {/* <main> */}
                 <SidebarTrigger />
-              { children}
-              </main>
-          </SidebarProvider>
-          <div className="h-screen bg-arom_white">          
-            <Providers>{children}</Providers>
-          </div>
+                {children}
+              {/* </main> */}
+            </SidebarProvider>
+          </Providers>
         </div>
       </body>
     </html>
