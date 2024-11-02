@@ -4,7 +4,6 @@ import { Kanit} from "next/font/google";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import "./globals.css";
-import Sidebar from "@/components/ui/sidebar";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { cookies } from "next/headers"
 
