@@ -8,7 +8,7 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
-  theme: {  	
+  theme: {
   	fontSize: {
   		xs: '0.75rem',
   		sm: '0.875rem',
@@ -24,39 +24,39 @@ const config: Config = {
   	},
   	extend: {
   		colors: {
-        arom_white: "#FFFCF9",
-        arom_brown: "#9B826F",
-        arom_gray: "#343434",
-        arom_yellow: {
-          50: "#F7CF5350",
-          80: "#F7CF5380",
-          100: "#F7CF53",
-        },
-        arom_pink: {
-          50: "#EEAFA850",
-          80: "#EEAFA880",
-          100: "#EEAFA8",
-        },
-        arom_blue: {
-          50: "#6795D950",
-          80: "#6795D980",
-          100: "#6795D9",
-        },
-        arom_orange: {
-          50: "#D75A4450",
-          80: "#D75A4480",
-          100: "#D75A44",
-        },
-        arom_green: {
-          50: "#385F3350",
-          80: "#385F3380",
-          100: "#385F33",
-        },
-        arom_purple: {
-          50: "#6F429350",
-          80: "#6F429380",
-          100: "#6F4293",
-        },
+  			arom_white: '#FFFCF9',
+  			arom_brown: '#9B826F',
+  			arom_gray: '#343434',
+  			arom_yellow: {
+  				'50': '#F7CF5350',
+  				'80': '#F7CF5380',
+  				'100': '#F7CF53'
+  			},
+  			arom_pink: {
+  				'50': '#EEAFA850',
+  				'80': '#EEAFA880',
+  				'100': '#EEAFA8'
+  			},
+  			arom_blue: {
+  				'50': '#6795D950',
+  				'80': '#6795D980',
+  				'100': '#6795D9'
+  			},
+  			arom_orange: {
+  				'50': '#D75A4450',
+  				'80': '#D75A4480',
+  				'100': '#D75A44'
+  			},
+  			arom_green: {
+  				'50': '#385F3350',
+  				'80': '#385F3380',
+  				'100': '#385F33'
+  			},
+  			arom_purple: {
+  				'50': '#6F429350',
+  				'80': '#6F429380',
+  				'100': '#6F4293'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			primary: {
@@ -96,12 +96,62 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			sidebar: {
+  				DEFAULT: 'hsl(var(--sidebar-background))',
+  				foreground: 'hsl(var(--sidebar-foreground))',
+  				primary: 'hsl(var(--sidebar-primary))',
+  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+  				accent: 'hsl(var(--sidebar-accent))',
+  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+  				border: 'hsl(var(--sidebar-border))',
+  				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		keyframes: {
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			},
+  			'collapsible-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-collapsible-content-height)'
+  				}
+  			},
+  			'collapsible-up': {
+  				from: {
+  					height: 'var(--radix-collapsible-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		},
+  		animation: {
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'collapsible-down': 'collapsible-down 0.2s ease-out',
+  			'collapsible-up': 'collapsible-up 0.2s ease-out'
   		}
   	}
   },

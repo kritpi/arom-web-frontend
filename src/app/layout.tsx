@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Providers } from "./provider/NextUIProvider";
 import { Kanit} from "next/font/google";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 import "./globals.css";
 import Sidebar from "@/components/ui/sidebar";
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
+import { cookies } from "next/headers"
 
 const kanit = Kanit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -17,16 +20,27 @@ export const metadata: Metadata = {
   description: "How was your 'AROM' today?",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
   return (
     <html lang="en">
       <body className={kanit.className}>
         <div>
-        <AdminPanelLayout>{children}</AdminPanelLayout>;
+          <SidebarProvider defaultOpen={defaultOpen} >
+            <AppSidebar />
+              <main>
+                <SidebarTrigger />
+              { children}
+              </main>
+          </SidebarProvider>
+          <div className="h-screen bg-arom_white">          
+            <Providers>{children}</Providers>
+          </div>
         </div>
       </body>
     </html>
