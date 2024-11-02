@@ -26,19 +26,18 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
+
   return (
     <html lang="en">
       <body className={kanit.className}>
-        <div className="h-screen w-screen bg-arom_white">
-          <Providers>
-            <SidebarProvider defaultOpen={defaultOpen}>
-              <AppSidebar />
-              {/* <main> */}
-                <SidebarTrigger />
-                {children}
-              {/* </main> */}
-            </SidebarProvider>
-          </Providers>
+        <div>
+          <SidebarProvider defaultOpen={defaultOpen}>
+            <AppSidebar />
+            <main className="px-[60px] py-[80px] h-screen w-screen bg-arom_white">
+              <SidebarTrigger />
+              <Providers>{children}</Providers>
+            </main>
+          </SidebarProvider>
         </div>
       </body>
     </html>
