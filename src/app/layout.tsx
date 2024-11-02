@@ -4,8 +4,7 @@ import { Kanit } from "next/font/google";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
-import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
-import { cookies } from "next/headers";
+import { cookies } from "next/headers"
 
 const kanit = Kanit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
