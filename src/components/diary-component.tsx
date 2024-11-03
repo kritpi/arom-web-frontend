@@ -1,80 +1,86 @@
-import { useState } from "react";
-import { Diary } from "../../type/types";
+'use client'
+
+import { useState } from "react"
+import Image, { StaticImageData } from "next/image"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Diary } from "../../type/types"
+import Happy from '@/app/img/Happy.png'
+import SoSo from '@/app/img/SoSo.png'
+import InLove from '@/app/img/inLove.png'
+import Sad from '@/app/img/Sad.png'
+import Silly from '@/app/img/Silly.png'
+import Anxious from '@/app/img/Anxious.png'
+import Angry from '@/app/img/Angry.png'
 
-export const DiaryComponent = ({ diary }: { diary: Diary }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const moodImages: { [key in Diary['mood']]: StaticImageData } = {
+  "Happy": Happy,
+  "So So": SoSo,
+  "In Love": InLove,
+  "Sad": Sad,
+  "Silly": Silly,
+  "Anxious": Anxious,
+  "Angry": Angry,
+}
 
-  let imageSrc;
-  switch (diary?.mood) {
-    case "Happy":
-      imageSrc = "/images/Happy.png";
-      break;
-    case "So So":
-      imageSrc = "/images/SoSo.png";
-      break;
-    case "In Love":
-      imageSrc = "/images/inLove.png";
-      break;
-    case "Sad":
-      imageSrc = "/images/Sad.png";
-      break;
-    case "Silly":
-      imageSrc = "/images/Silly.png";
-      break;
-    case "Anxious":
-      imageSrc = "/images/Anxious.png";
-      break;
-    case "Angry":
-      imageSrc = "/images/Angry.png";
-      break;
-  }
+export function DiaryComponent({ diary }: { diary: Diary }) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const imageSrc = moodImages[diary.mood] || "/images/default.png"
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Image src={imageSrc} width={100} height={50} alt="Mood Image" />
+        <Image 
+          src={imageSrc} 
+          width={100}
+          height={100}           
+          alt={`Mood: ${diary.mood}`} 
+          className="cursor-pointer"
+        />        
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[90vw] md:max-w-[600px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl">Your Mood Today</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <span className="text-md font-medium">Mood:</span>
-            <span className={`col-span-3 text-md font-medium capitalize`}>
-              {diary?.mood}
-            </span>
+        <ScrollArea className="flex-grow">
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-md font-medium">Mood:</span>
+              <span className="col-span-3 text-md font-medium capitalize">
+                {diary.mood}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-md font-medium">Description:</span>
+              <span className="col-span-3 text-md break-words">{diary.description}</span>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <span className="text-md font-medium">Date:</span>
+              <span className="col-span-3 text-md">
+                {diary.date.toLocaleDateString()}
+              </span>
+            </div>
+            {/* <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-md font-medium">Emotions:</span>
+              <div className="col-span-3 flex flex-wrap gap-2">
+                {diary.emotions.map((emotion, index) => (
+                  <Badge key={index} className="bg-yellow-500 hover:bg-yellow-400">
+                    {emotion}
+                  </Badge>
+                ))}
+              </div>
+            </div> */}
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <span className="text-md font-medium">Description:</span>
-            <span className="col-span-3 text-md">{diary?.description}</span>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <span className="text-md font-medium">Date:</span>
-            <span className="col-span-3 text-md">
-              {diary?.date.toLocaleDateString()}
-            </span>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <span className="text-md font-medium">Emotion:</span>
-            <span className="col-span-3 text-md">
-              <Badge className="bg-yellow-500 hover:bg-yellow-400">
-                Hopeful
-              </Badge>
-              Hopeful, Sad, Tired ...
-            </span>
-          </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}

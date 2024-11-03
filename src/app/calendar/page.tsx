@@ -28,7 +28,7 @@ const events: Event[] = [
     start: new Date("2024-11-11 10:00"),
     end: new Date("2024-11-12 11:30"),
     description: "Call with international partners",
-    color: "red",
+    color: "purple",
     type: "event",
   },
 ];
@@ -57,7 +57,7 @@ const todos: Todo[] = [
 const diaries: Diary[] = [
   {
     id: "1",
-    mood: "Happy",
+    mood: "Sad",
     title: "Mood of today",
     description: "What a sad day here",
     date: new Date("2024-11-10"),
