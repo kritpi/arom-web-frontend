@@ -51,7 +51,7 @@ export function TaskSidebar() {
     
 
     return (
-        <div className="fixed top-0 left-0 h-screen w-[200px] bg-[#F4ECE5] p-4">
+        <div className="h-screen w-[200px] bg-[#F4ECE5] p-4">
             {/* ส่วน List */}
             <div className="flex items-center justify-between mb-2">
                 <h2 className="text-2xl text-black font-bold">List</h2>
