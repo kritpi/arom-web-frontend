@@ -30,7 +30,6 @@ export default function DiaryPage() {
     <div className="flex flex-col gap-4 px-10 py-10 w-full">
       <div className="flex w-fit">
       <MdNavigateBefore className="text-5xl text-arom_brown" onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}/>
-
       <Popover>
         <PopoverTrigger asChild>
           <Button className={"w-fit bg-transparent"}>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image, { StaticImageData } from "next/image"
+import { useSearchParams } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -33,7 +34,16 @@ const moodImages: { [key in Diary['mood']]: StaticImageData } = {
 export function DiaryComponent({ diary }: { diary: Diary }) {
   const [isOpen, setIsOpen] = useState(false)
 
-  const imageSrc = moodImages[diary.mood] || "/images/default.png"
+
+   const searchParams = useSearchParams();
+
+   const emotion = searchParams.get('emotion') || 'Unknown Emotion';
+   console.log(emotion);
+   const moodFromUrl = searchParams.get('mood') as Diary['mood'] | null; 
+   const mood = moodFromUrl || diary.mood; 
+   console.log(mood)
+
+   const imageSrc = moodImages[mood] || "/img/default.png";
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -42,7 +52,7 @@ export function DiaryComponent({ diary }: { diary: Diary }) {
           src={imageSrc} 
           width={100}
           height={100}           
-          alt={`Mood: ${diary.mood}`} 
+          alt={`Mood: ${mood}`} 
           className="cursor-pointer"
         />        
       </DialogTrigger>
@@ -55,7 +65,7 @@ export function DiaryComponent({ diary }: { diary: Diary }) {
             <div className="grid grid-cols-4 items-start gap-4">
               <span className="text-md font-medium">Mood:</span>
               <span className="col-span-3 text-md font-medium capitalize">
-                {diary.mood}
+                {mood}
               </span>
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
