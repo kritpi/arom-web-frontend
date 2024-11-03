@@ -28,7 +28,7 @@ const events: Event[] = [
     start: new Date("2024-11-11 10:00"),
     end: new Date("2024-11-12 11:30"),
     description: "Call with international partners",
-    color: "red",
+    color: "purple",
     type: "event",
   },
 ];
