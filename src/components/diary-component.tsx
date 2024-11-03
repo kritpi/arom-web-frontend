@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react"
-import Image from "next/image"
+import Image, { StaticImageData } from "next/image"
 import {
   Dialog,
   DialogContent,
@@ -14,14 +14,22 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Diary } from "../../type/types"
 import Happy from '/src/app/img/Happy.png';
 
-const moodImages: { [key in Diary['mood']]: string } = {
-  "Happy": "/images/Happy.png",
-  "So So": "/images/SoSo.png",
-  "In Love": "/images/inLove.png",
-  "Sad": "/images/Sad.png",
-  "Silly": "/images/Silly.png",
-  "Anxious": "/images/Anxious.png",
-  "Angry": "/images/Angry.png",
+import Happy from '@/app/img/Happy.png'
+import SoSo from '@/app/img/SoSo.png'
+import InLove from '@/app/img/inLove.png'
+import Sad from '@/app/img/Sad.png'
+import Silly from '@/app/img/Silly.png'
+import Anxious from '@/app/img/Anxious.png'
+import Angry from '@/app/img/Angry.png'
+
+const moodImages: { [key in Diary['mood']]: StaticImageData } = {
+  "Happy": Happy,
+  "So So": SoSo,
+  "In Love": InLove,
+  "Sad": Sad,
+  "Silly": Silly,
+  "Anxious": Anxious,
+  "Angry": Angry,
 }
 
 export function DiaryComponent({ diary }: { diary: Diary }) {
