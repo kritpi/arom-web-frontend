@@ -4,7 +4,8 @@ import { Kanit } from "next/font/google";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
-import { cookies } from "next/headers"
+import { cookies } from "next/headers";
+import QueryClientProvider from "@/lib/react-query/QueryClientProvider";
 
 const kanit = Kanit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -30,12 +31,14 @@ export default async function RootLayout({
     <html lang="en">
       <body className={kanit.className}>
         <div>
-          <SidebarProvider defaultOpen={defaultOpen}>
+          <QueryClientProvider>
+            <SidebarProvider defaultOpen={defaultOpen}>
             <AppSidebar />
-            <main className="px-[60px] py-[80px] h-screen w-full bg-arom_white">
-              <Providers>{children}</Providers>
-            </main>
-          </SidebarProvider>
+              <main className="px-[60px] py-[80px] h-screen w-full bg-arom_white">
+                <Providers>{children}</Providers>
+              </main>
+            </SidebarProvider>
+          </QueryClientProvider>
         </div>
       </body>
     </html>
