@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
 import { cookies } from "next/headers"
+import QueryClientProvider from "@/lib/react-query/QueryClientProvider";
 
 const kanit = Kanit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -30,12 +31,16 @@ export default async function RootLayout({
     <html lang="en">
       <body className={kanit.className}>
         <div>
+        <Providers>
+          <QueryClientProvider>
           <SidebarProvider defaultOpen={defaultOpen}>
             <AppSidebar />
             <main className="px-[60px] py-[80px] h-screen w-full bg-arom_white">
-              <Providers>{children}</Providers>
+              {children}
             </main>
           </SidebarProvider>
+          </QueryClientProvider>
+          </Providers>
         </div>
       </body>
     </html>
