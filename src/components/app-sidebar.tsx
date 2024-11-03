@@ -19,12 +19,12 @@ import { jwtDecode } from "jwt-decode";
 const items = [
   {
     title: "Calendar",
-    url: "#",
+    url: "/calendar",
     icon: Calendar,
   },
   {
     title: "Diary",
-    url: "#",
+    url: "/diary/",
     icon: Home,
   },
   {
