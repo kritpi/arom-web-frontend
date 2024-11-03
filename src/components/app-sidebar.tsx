@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image";
 import { Calendar, Home, Search, FolderCheck  } from "lucide-react"
+import AROMImage from '/src/app/img/AROM.png';
  
 const items = [
   {
@@ -37,12 +38,7 @@ export function AppSidebar() {
       <div className="bg-[#FFFCF9] h-full">
       <SidebarHeader>
         <div className="flex justify-center">
-            <Image
-            src="/images/AROM.png"
-            width={150}
-            height={80}
-            alt="AROM"
-            />  
+          <Image src={AROMImage} width={150} height={80} alt="AROM" />
         </div>
       </SidebarHeader>
       <SidebarContent>

@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Diary } from "../../type/types"
+import Happy from '/src/app/img/Happy.png';
 
 const moodImages: { [key in Diary['mood']]: string } = {
   "Happy": "/images/Happy.png",
