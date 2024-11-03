@@ -29,8 +29,8 @@ const items = [
   },
   {
     title: "Tasks",
-    url: "#",
-    icon: FolderCheck,
+    url: "/task",
+    icon: FolderCheck ,
   },
 ];
 
