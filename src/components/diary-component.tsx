@@ -12,8 +12,6 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Diary } from "../../type/types"
-import Happy from '/src/app/img/Happy.png';
-
 import Happy from '@/app/img/Happy.png'
 import SoSo from '@/app/img/SoSo.png'
 import InLove from '@/app/img/inLove.png'
