@@ -62,6 +62,7 @@ export default function LoginPage() {
       console.log(decoded);
 
       setLoginError(null);
+      router.replace("/calendar")
     } catch (error) {
       console.error(error);
       setLoginError(

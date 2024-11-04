@@ -14,6 +14,15 @@ import { Calendar, Home, Search, FolderCheck } from "lucide-react";
 import AROMImage from "/src/app/img/AROM.png";
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import { createBrowserClient } from "@supabase/ssr";
+
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+
 const items = [
   {
     title: "Calendar",
@@ -28,19 +37,19 @@ const items = [
   {
     title: "Tasks",
     url: "/task",
-    icon: FolderCheck ,
+    icon: FolderCheck,
   },
 ];
 
 export function AppSidebar() {
   const [isHasToken, setIsHasToken] = useState(false);
-  const [userData, setUserData] = useState<any>()
+  const [userData, setUserData] = useState<any>();
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       setIsHasToken(true);
-      setUserData(jwtDecode(token))
+      setUserData(jwtDecode(token));
       console.log(token);
       console.log(userData);
     } else {

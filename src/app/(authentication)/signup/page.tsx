@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { register } from "@/api/authentication/useRegister";
+import { register as registerUser } from "@/api/authentication/useRegister";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -59,8 +59,14 @@ export default function SignUpPage() {
 
   async function onSignUpSubmit(values: TSignUpSchema): Promise<void> {
     try {
-      console.log(values);
-      // Implement your sign-up logic here
+      
+      const signUpData = {
+        username: values.username,
+        password: values.password,
+        profileImage: values.profileImage
+      }
+      console.log(signUpData);
+      await registerUser(signUpData)
     } catch (error) {
       console.error(error);
     }
