@@ -41,7 +41,6 @@ export function AppSidebar() {
   const [isHasToken, setIsHasToken] = useState(false);
   const [userData, setUserData] = useState<any>();
   
-
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
