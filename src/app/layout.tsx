@@ -34,7 +34,7 @@ export default async function RootLayout({
           <QueryClientProvider>
             <SidebarProvider defaultOpen={true} >
             <AppSidebar />
-              <main className="px-[60px] h-screen w-screen bg-arom_white">
+              <main className="px-[60px] py-[60px] h-screen w-screen bg-arom_white">
                 <Providers>{children}</Providers>
               </main>
             </SidebarProvider>

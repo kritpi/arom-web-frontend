@@ -27,7 +27,7 @@ export default function DiaryPage() {
     }
   };
   return (
-    <div className="flex flex-col gap-4 px-10 py-10 w-full">
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex w-fit">
       <MdNavigateBefore className="text-5xl text-arom_brown" onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}/>
       <Popover>

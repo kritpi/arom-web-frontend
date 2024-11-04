@@ -15,10 +15,10 @@ import Angry from '@/app/img/Angry.png'
 export default function Diary() {
   return (
     <div>
-        <div className="flex justify-center pt-10">
+        <div className="flex justify-center">
             <Image src={howareu} alt="How are you?" width={800}/> 
         </div>
-        <div className="grid grid-rows-2 pt-3">
+        <div className="grid grid-rows-2 ">
             <div className="grid grid-cols-3 justify-center">
                 <div className="flex justify-end">
                     <EmotionButton 
