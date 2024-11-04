@@ -5,7 +5,7 @@ import taskQueryKey from "./taskQueryKey";
 
 
 const createTask = async (task:CreateTask ) => {
-  const { data } = await axios.post(`/task`,task, {});
+  const { data } = await axios.post(`/event`,task, {});
   return data;
 };
 

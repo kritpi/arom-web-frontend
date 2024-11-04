@@ -21,6 +21,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Plus } from "lucide-react"
 import { CreateTask } from "@/interface/Task"
+import useCreateTask from "@/api/event/useCreateTask"
+import { useRouter } from "next/navigation"
 
 type TagType = "Personal" | "Work" | "Study"
 
@@ -30,6 +32,8 @@ interface AddTaskProps {
 }
 
 export function AddTask({ onAddTask, userId }: AddTaskProps) {
+  const createTask = useCreateTask()
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -41,18 +45,20 @@ export function AddTask({ onAddTask, userId }: AddTaskProps) {
 
   const handleAddTask = async () => {
     if (title.trim() && startDate && startTime && endDate && endTime) {
-      const startDateTime = `${startDate}T${startTime}`
-      const endDateTime = `${endDate}T${endTime}`
+      const startDateTime = `${startDate}T${startTime}:00Z`
+      const endDateTime = `${endDate}T${endTime}:00Z`
       const newTask: CreateTask = {
-        title,
-        description,
-        start: new Date(startDateTime),
-        end: new Date(endDateTime),
+        title: title,
+        description: description,
+        start:startDateTime,
+        end: endDateTime,
         tag: selectedTag,
         user_id: userId,
       }
       try {
-        await onAddTask(newTask)
+        console.log("New Task:", newTask)
+        await createTask.mutateAsync(newTask)
+        router.push("/task")
         setOpen(false)
         resetForm()
       } catch (err) {

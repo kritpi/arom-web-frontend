@@ -10,6 +10,7 @@ import useCreateTask from "@/api/event/useCreateTask";
 import useUserIdTask from "@/api/event/useUserIdTask";
 import { useRouter } from "next/navigation";
 import { AddTask } from "@/components/create-task";
+import useUpdateTask from "@/api/event/useUpdateTask";
 
 type TagType = "Personal" | "Work" | "Study" | "All";
 
@@ -19,6 +20,7 @@ export default function TaskPage() {
   const [filterTag, setFilterTag] = useState<TagType>("All");
   const [userData, setUserData] = useState<any>(null);
   const [isHasToken, setIsHasToken] = useState(false);
+  const [localTasks, setLocalTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -31,12 +33,26 @@ export default function TaskPage() {
   }, []);
 
   const createTask = useCreateTask();
-  const {
-    data: tasks = [],
-    isLoading,
-    error,
-  } = useUserIdTask(userData?.user_id);
+  const updateTask = useUpdateTask();
+  const { data: tasks, isLoading, error } = useUserIdTask(userData?.user_id);
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (tasks) {
+      const storedTasks = localStorage.getItem("tasks");
+      if (storedTasks) {
+        const parsedTasks = JSON.parse(storedTasks);
+        const updatedTasks = tasks.map((task: Task) => ({
+          ...task,
+          complete: parsedTasks[task.id]?.complete ?? task.complete,
+        }));
+        setLocalTasks(updatedTasks);
+      } else {
+        setLocalTasks(tasks);
+      }
+    }
+  }, [tasks]);
 
   const handleAddTask = async (newTask: CreateTask) => {
     try {
@@ -47,13 +63,26 @@ export default function TaskPage() {
     }
   };
 
-  const toggleTaskCompletion = async (taskId: string) => {
-    // Implement the logic to update task completion status
-    // This might involve calling an API or updating local state
-    console.log(`Toggling completion for task ${taskId}`);
+  const toggleTaskCompletion = async (taskId: string, complete: boolean) => {
+    const updatedTasks = localTasks.map((task) =>
+      task.id === taskId ? { ...task, complete: !complete } : task
+    );
+    setLocalTasks(updatedTasks);
+
+    const taskCompletionState = updatedTasks.reduce((acc, task) => {
+      acc[task.id] = { complete: task.complete };
+      return acc;
+    }, {} as Record<string, { complete: boolean }>);
+
+    localStorage.setItem("tasks", JSON.stringify(taskCompletionState));
+
+    await updateTask.mutateAsync({
+      id: taskId,
+      task: { completed: !complete },
+    });
   };
 
-  const filteredTasks = tasks.filter(
+  const filteredTasks = localTasks.filter(
     (task: Task) => filterTag === "All" || task.tag === filterTag
   );
 
@@ -82,6 +111,8 @@ export default function TaskPage() {
     </div>
   );
 }
+
+// ... (rest of the code remains the same)
 
 function TagFilter({
   currentFilter,
@@ -130,7 +161,7 @@ function TaskSection({
 }: {
   title: string;
   tasks: Task[];
-  toggleTaskCompletion: (taskId: string) => void;
+  toggleTaskCompletion: (taskId: string, complete: boolean) => void;
 }) {
   return (
     <section>
@@ -153,7 +184,7 @@ function TaskItem({
   toggleTaskCompletion,
 }: {
   task: Task;
-  toggleTaskCompletion: (taskId: string) => void;
+  toggleTaskCompletion: (taskId: string, complete: boolean) => void;
 }) {
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -162,10 +193,8 @@ function TaskItem({
           type="checkbox"
           className="form-checkbox"
           checked={task.complete}
-          onChange={() => toggleTaskCompletion(task.id)}
-          aria-label={`Mark "${task.title}" as ${
-            task.complete ? "incomplete" : "complete"
-          }`}
+          onChange={() => toggleTaskCompletion(task.id, task.complete)}
+          aria-label={`Mark "${task.title}" as ${task.complete ? true : false}`}
         />
         <div>
           <p
