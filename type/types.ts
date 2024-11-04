@@ -25,8 +25,6 @@ export type Diary = {
   title: string;
   description: string;
   date: Date;
-  // start: Date;
-  // end: Date;
   type: "diary";
 };
 
