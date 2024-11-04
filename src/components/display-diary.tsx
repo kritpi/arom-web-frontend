@@ -86,7 +86,7 @@ console.log("Data:",data , "Date:",date);
           {data?.description}
         </p>
       </div>
-      {date === new Date().toISOString().slice(0, 10) && (
+      {date === new Date().toLocaleString("sv-SE", { timeZone: "Asia/Bangkok" }).split(" ")[0] && (
         <Button
           className="w-full bg-[#F4ECE5] text-arom_brown border border-arom_brown mt-4"
           onClick={() => {

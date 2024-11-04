@@ -42,12 +42,15 @@ export default function CreateDiary({ date, mood }: CreateDiaryProps) {
       setIsHasToken(false);
     }
   }, [setIsHasToken]);
+  const { data:diaries, isLoading, error } = useUserIdDiary(userData?.user_id)
+  console.log("Diary:",diaries);
+
+  console.log("ThaiDate:",date); 
+  const data = diaries?.find((item) => item.date === `${date}T00:00:00Z`)
   const router = useRouter();
   const createDiary = useCreateDiary();
   const updateDiary = useUpdateDiaries();
 
-  const { data:diaries, isLoading, error } = useUserIdDiary(userData?.user_id);
-  const data = diaries?.find((item) => item.date ===  `${date}T00:00:00Z`);
   const [typeFunc, setTypeFunc] = useState<boolean>(false);
 
   const [emotions, setEmotions] = useState<string[]>([]);
@@ -64,6 +67,7 @@ export default function CreateDiary({ date, mood }: CreateDiaryProps) {
 
   useEffect(() => {
     if (data) {
+      console.log("Data:",data);
       setTypeFunc(true);
       setMoodImage(moodImages[data.mood]);
       setEmotions(data.emotions);

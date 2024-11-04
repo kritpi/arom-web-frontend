@@ -20,6 +20,7 @@ export default function DiaryPage() {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: "Asia/Bangkok",
   }).format(date);
   const handleDateSelect = (day: Date | undefined) => {
     if (day) {

@@ -49,10 +49,10 @@ export default function Diary() {
     if (isLoading) {
         return <div>Loading...</div>;
       }
-    console.log("UserId: ",diary);
+    console.log("UserId: ",formattedDate);
     diary?.map((item) => {
-        if (item.date === formattedDate && checkEdit != "true") {
-            router.push(`/diary/display?date=${formattedDate}&edit=true`)
+        if (item.date === `${formattedDate}T00:00:00Z` && checkEdit !== "true") {
+            router.push(`/diary/display`)
             return 0
         }
     }

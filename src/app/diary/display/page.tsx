@@ -20,7 +20,26 @@ export default function DiaryPage() {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: "Asia/Bangkok",
   }).format(date);
+
+  const options = { timeZone: "Asia/Bangkok" };
+
+  const year = new Intl.DateTimeFormat("en-GB", {
+    year: "numeric",
+    ...options,
+  }).format(date);
+  const month = new Intl.DateTimeFormat("en-GB", {
+    month: "2-digit",
+    ...options,
+  }).format(date);
+  const day = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    ...options,
+  }).format(date);
+
+  const formattedDateParse = `${year}-${month}-${day}`;
+
   const handleDateSelect = (day: Date | undefined) => {
     if (day) {
       setDate(day);
@@ -59,7 +78,7 @@ export default function DiaryPage() {
           />
         )}
       </div>
-      <DisplaDiary date={date.toISOString().slice(0, 10)} />
+      <DisplaDiary date={formattedDateParse} />
     </div>
   );
 }
