@@ -29,29 +29,37 @@ export default function DiaryPage() {
   return (
     <div className="flex flex-col pt-10 gap-4 w-full">
       <div className="flex w-fit">
-      <MdNavigateBefore className="text-5xl text-arom_brown" onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}/>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button className={"w-fit bg-transparent"}>
-            <p className=" text-5xl font-semibold "> {formattedDate} </p>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
-          <div className="rounded-md border">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={handleDateSelect}
-              toDate={new Date()}
-            />
-          </div>
-        </PopoverContent>
-      </Popover>
-      {date.toDateString() === new Date().toDateString() ?      <MdNavigateNext className="text-5xl text-[#F4ECE5]" />
-      : <MdNavigateNext className="text-5xl text-arom_brown" onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}/>}
-
-        </div>
-        <DisplaDiary date={date.toISOString().slice(0, 10)} />
-        </div>
+        <MdNavigateBefore
+          className="text-5xl text-arom_brown"
+          onClick={() => setDate(new Date(date.setDate(date.getDate() - 1)))}
+        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button className={"w-fit bg-transparent"}>
+              <p className=" text-5xl font-semibold "> {formattedDate} </p>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+            <div className="rounded-md border">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={handleDateSelect}
+                toDate={new Date()}
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+        {date.toDateString() === new Date().toDateString() ? (
+          <MdNavigateNext className="text-5xl text-[#F4ECE5]" />
+        ) : (
+          <MdNavigateNext
+            className="text-5xl text-arom_brown"
+            onClick={() => setDate(new Date(date.setDate(date.getDate() + 1)))}
+          />
+        )}
+      </div>
+      <DisplaDiary date={date.toISOString().slice(0, 10)} />
+    </div>
   );
 }

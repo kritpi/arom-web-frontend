@@ -18,7 +18,6 @@ import { createBrowserClient } from "@supabase/ssr";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { supabase } from "@/lib/supabaseClient";
 
-
 const items = [
   {
     title: "Calendar",
@@ -40,19 +39,19 @@ const items = [
 export function AppSidebar() {
   const [isHasToken, setIsHasToken] = useState(false);
   const [userData, setUserData] = useState<any>();
-  
+
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       setIsHasToken(true);
-      setUserData(jwtDecode(token));               
+      setUserData(jwtDecode(token));
       console.log(token);
       console.log(userData);
     } else {
       setIsHasToken(false);
     }
   }, [setIsHasToken]);
-  
+
   return (
     <div className="w-[230px] h-full">
       <SidebarInset className="bg-[#F9F4ED]">
@@ -62,13 +61,15 @@ export function AppSidebar() {
               <Image src={AROMImage} width={150} height={80} alt="AROM" />
             </div>
             <div className="flex flex-row gap-2 justify-center pb-3">
-                <Avatar className="justify-self-center w-[35px] h-[35px]">
+              <Avatar className="justify-self-center w-[35px] h-[35px]">
                 {userData?.ProfileImage ? (
                   <AvatarImage src={userData?.ProfileImage} />
                 ) : (
-                  <AvatarFallback>{userData?.username?.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>
+                    {userData?.username?.charAt(0)}
+                  </AvatarFallback>
                 )}
-                </Avatar>
+              </Avatar>
               <p className="flex justify-self-start self-center text-[22px] text-arom_brown">
                 {userData?.username}
               </p>

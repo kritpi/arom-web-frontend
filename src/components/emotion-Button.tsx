@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Image, { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import { CoolMode } from "@/components/ui/cool-mode";
@@ -18,7 +18,7 @@ export default function EmotionButton({
   particleSrc,
   imageSize = 100,
   date,
-  buttonText
+  buttonText,
 }: EmotionButtonProps) {
   const router = useRouter();
 
@@ -28,17 +28,24 @@ export default function EmotionButton({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center"> 
-      <CoolMode options={{
-        particle: particleSrc,
-        size: 50,
-        particleCount:10,
-      }}>
+    <div className="flex flex-col items-center justify-center">
+      <CoolMode
+        options={{
+          particle: particleSrc,
+          size: 50,
+          particleCount: 10,
+        }}
+      >
         <button onClick={handleNavigation}>
-          <Image src={imageSrc} alt={altText} width={imageSize} height={imageSize} />
+          <Image
+            src={imageSrc}
+            alt={altText}
+            width={imageSize}
+            height={imageSize}
+          />
         </button>
       </CoolMode>
-      <p className="mt-10 font-semibold text-xl">{buttonText}</p> 
+      <p className="mt-10 font-semibold text-xl">{buttonText}</p>
     </div>
   );
 }
