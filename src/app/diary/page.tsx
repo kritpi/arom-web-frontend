@@ -45,11 +45,11 @@ export default function Diary() {
         day: "2-digit"
       }).format(date).replace(/(\d{4})-(\d{2})-(\d{2})/, "$1-$2-$3")
     const router = useRouter();
-     //input date
     const { data:diary, isLoading, error } = useUserIdDiary(userData?.user_id);
     if (isLoading) {
         return <div>Loading...</div>;
       }
+    console.log("UserId: ",diary);
     diary?.map((item) => {
         if (item.date === formattedDate && checkEdit != "true") {
             router.push(`/diary/display?date=${formattedDate}&edit=true`)
