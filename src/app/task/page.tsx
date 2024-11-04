@@ -3,101 +3,44 @@
 import { useState } from 'react';
 import TaskSidebar from '@/components/task-sidebar';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-
-interface Tag {
-    name: string;
-    color: string; 
-}
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Plus } from "lucide-react"
+type TagType = 'Personal' | 'Work' | 'Study'
 
 interface Task {
-    text: string;
-    completed: boolean;
-    dueDate: string;
-    tags: Tag[]; 
+  text: string
+  completed: boolean
+  dueDate: string
+  tag: TagType
 }
 
 export default function TaskPage() {
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [inputValue, setInputValue] = useState<string>('');
-    const [dueDateValue, setDueDateValue] = useState<string>('');
-    const [dueTimeValue, setDueTimeValue] = useState<string>('');
-    const [tagInputValue, setTagInputValue] = useState<string>(''); // For the tag input
-    const [tagColor, setTagColor] = useState<string>('bg-blue-200'); // Default color
-    const [selectedTags, setSelectedTags] = useState<Tag[]>([]); // For selected tags
-
-    const colorOptions = [
-        { name: 'Red', value: 'bg-red-200' },
-        { name: 'Green', value: 'bg-green-200' },
-        { name: 'Blue', value: 'bg-blue-200' },
-        { name: 'Yellow', value: 'bg-yellow-200' },
-        { name: 'Purple', value: 'bg-purple-200' },
-        { name: 'Gray', value: 'bg-gray-200' },
-    ];
+    const [tasks, setTasks] = useState<Task[]>([])
+    const [open, setOpen] = useState(false)
+    const [inputValue, setInputValue] = useState("")
+    const [dueDateValue, setDueDateValue] = useState("")
+    const [dueTimeValue, setDueTimeValue] = useState("")
+    const [selectedTag, setSelectedTag] = useState<TagType>('Personal')
 
     const handleAddTask = () => {
         if (inputValue.trim() && dueDateValue.trim() && dueTimeValue.trim()) {
-            const dueDateTime = `${dueDateValue}T${dueTimeValue}`;
-            setTasks([...tasks, { text: inputValue, completed: false, dueDate: dueDateTime, tags: selectedTags }]);
-            setInputValue('');
-            setDueDateValue('');
-            setDueTimeValue('');
-            setSelectedTags([]); 
-            setTagInputValue(''); 
-            setTagColor('bg-blue-200'); 
+          const dueDateTime = `${dueDateValue}T${dueTimeValue}`
+          setTasks([...tasks, { text: inputValue, completed: false, dueDate: dueDateTime, tag: selectedTag }])
+          setOpen(false)
+          resetForm()
         }
-    };
-
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            handleAddTask();
-        }
-    };
-
-    const handleToggleTask = (index: number) => {
-        const newTasks = [...tasks];
-        newTasks[index].completed = !newTasks[index].completed;
-        setTasks(newTasks);
-    };
-
-    const handleDeleteTask = (index: number) => {
-        const newTasks = tasks.filter((_, i) => i !== index);
-        setTasks(newTasks);
-    };
-
-    const handleAddTag = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter' && tagInputValue.trim()) {
-            setSelectedTags([...selectedTags, { name: tagInputValue, color: tagColor }]);
-            setTagInputValue('');
-            setTagColor('bg-blue-200'); // Reset color to default
-        }
-    };
-
-    const handleDeleteTag = (index: number) => {
-        const newTags = selectedTags.filter((_, i) => i !== index);
-        setSelectedTags(newTags);
-    };
-
-    const isToday = (dueDate: string) => {
-        const today = new Date();
-        const taskDate = new Date(dueDate);
-        return taskDate.toDateString() === today.toDateString();
-    };
-
-    const isNext7Days = (dueDate: string) => {
-        const today = new Date();
-        const taskDate = new Date(dueDate);
-        const nextWeek = new Date(today);
-        nextWeek.setDate(today.getDate() + 7);
-        return taskDate > today && taskDate <= nextWeek;
-    };
-
-    const isAfter7Days = (dueDate: string) => {
-        const today = new Date();
-        const taskDate = new Date(dueDate);
-        const nextWeek = new Date(today);
-        nextWeek.setDate(today.getDate() + 7);
-        return taskDate > nextWeek;
-    };
+      }
+    
+      const resetForm = () => {
+        setInputValue("")
+        setDueDateValue("")
+        setDueTimeValue("")
+        setSelectedTag('Personal')
+      }
 
     return (
         <div className="flex w-full ">
@@ -107,158 +50,108 @@ export default function TaskPage() {
                 </SidebarProvider>
             </div>
             <div className="w-full py-[20px]">
-                <input 
-                    type="text" 
-                    value={inputValue} 
-                    onChange={(e) => setInputValue(e.target.value)} 
-                    placeholder="+ Add Task"
-                    onKeyDown={handleKeyDown}
-                    className="w-full p-2 mt-5 ml-6 border rounded-lg" 
+            <div className="p-4">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="w-full justify-start text-muted-foreground">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Task
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Task</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="task">Task Name</Label>
+              <Input
+                id="task"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Enter task name"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="date">Due Date</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={dueDateValue}
+                  onChange={(e) => setDueDateValue(e.target.value)}
                 />
-                <input 
-                    type="date" 
-                    value={dueDateValue} 
-                    onChange={(e) => setDueDateValue(e.target.value)} 
-                    className="w-full p-2 mt-2 ml-6 border rounded-lg"
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="time">Due Time</Label>
+                <Input
+                  id="time"
+                  type="time"
+                  value={dueTimeValue}
+                  onChange={(e) => setDueTimeValue(e.target.value)}
                 />
-                <input 
-                    type="time" 
-                    value={dueTimeValue} 
-                    onChange={(e) => setDueTimeValue(e.target.value)} 
-                    className="w-full p-2 mt-2 ml-6 border rounded-lg"
-                />
-                
-                {/* Tag Input */}
-                <input 
-                    type="text" 
-                    value={tagInputValue} 
-                    onChange={(e) => setTagInputValue(e.target.value)} 
-                    placeholder="Add Tag and press Enter" 
-                    onKeyDown={handleAddTag}
-                    className="w-full p-2 mt-2 ml-6 border rounded-lg" 
-                />
-                
-                {/* Color Selection for Tags */}
-                <div className="flex space-x-2 mt-2 ml-6">
-                    {colorOptions.map((color) => (
-                        <button
-                            key={color.value}
-                            className={`w-8 h-8 rounded-full ${color.value} border-2 ${tagColor === color.value ? 'border-black' : 'border-transparent'}`}
-                            onClick={() => setTagColor(color.value)}
-                        />
-                    ))}
-                </div>
-                
-                <div className="ml-6 mt-2">
-                    {selectedTags.map((tag, index) => (
-                        <span key={index} className={`inline-block ${tag.color} rounded-full px-2 py-1 text-xs text-gray-800 mr-1`}>
-                            {tag.name}
-                            <button onClick={() => handleDeleteTag(index)} className="ml-2 text-gray-600">x</button>
-                        </span>
-                    ))}
-                </div>
+              </div>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="tag">Tag</Label>
+              <Select value={selectedTag} onValueChange={(value: TagType) => setSelectedTag(value)}>
+                <SelectTrigger id="tag">
+                  <SelectValue placeholder="Select a tag" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Personal">Personal</SelectItem>
+                  <SelectItem value="Work">Work</SelectItem>
+                  <SelectItem value="Study">Study</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={handleAddTask}>Add Task</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
-                <p className="ml-8 mt-10">Today,</p>
-                <ul className="ml-8">
-                    {tasks.filter(task => isToday(task.dueDate) && !task.completed).map((task, index) => (
-                        <li key={index} className="flex items-center justify-between">
-                            <label className="flex items-center">
-                                <input 
-                                    type="checkbox" 
-                                    checked={task.completed} 
-                                    onChange={() => handleToggleTask(index)} 
-                                />
-                                <span className="ml-3.5">{task.text} (Due: {new Date(task.dueDate).toLocaleString()})</span>
-                            </label>
-                            <div>
-                                {task.tags.map((tag, tagIndex) => (
-                                    <span key={tagIndex} className={`inline-block ${tag.color} rounded-full px-2 py-1 text-xs text-gray-800 mr-1`}>
-                                        {tag.name}
-                                    </span>
-                                ))}
-                            </div>
-                            <button onClick={() => handleDeleteTask(index)} className="text-red-500">Delete</button>
-                        </li>
-                    ))}
-                </ul>
-                <hr className="w-full my-3 border-2 border-[#F4ECE5]" />
-
-                <p className="ml-8 mt-10">Next 7 Days,</p>
-                <ul className="ml-8">
-                    {tasks.filter(task => isNext7Days(task.dueDate) && !task.completed).map((task, index) => (
-                        <li key={index} className="flex items-center justify-between">
-                            <label className="flex items-center">
-                                <input 
-                                    type="checkbox" 
-                                    checked={task.completed} 
-                                    onChange={() => handleToggleTask(index)} 
-                                />
-                                <span className="ml-3.5">{task.text} (Due: {new Date(task.dueDate).toLocaleString()})</span>
-                            </label>
-                            <div>
-                                {task.tags.map((tag, tagIndex) => (
-                                    <span key={tagIndex} className={`inline-block ${tag.color} rounded-full px-2 py-1 text-xs text-gray-800 mr-1`}>
-                                        {tag.name}
-                                    </span>
-                                ))}
-                            </div>
-                            <button onClick={() => handleDeleteTask(index)} className="text-red-500">Delete</button>
-                        </li>
-                    ))}
-                </ul>
-
-                <hr className="w-full my-3 border-2 border-[#F4ECE5]" />
-
-                <p className="ml-8 mt-10">After 7 Days,</p>
-                <ul className="ml-8">
-                    {tasks.filter(task => isAfter7Days(task.dueDate) && !task.completed).map((task, index) => (
-                        <li key={index} className="flex items-center justify-between">
-                            <label className="flex items-center">
-                                <input 
-                                    type="checkbox" 
-                                    checked={task.completed} 
-                                    onChange={() => handleToggleTask(index)} 
-                                />
-                                <span className="ml-3.5">{task.text} (Due: {new Date(task.dueDate).toLocaleString()})</span>
-                            </label>
-                            <div>
-                                {task.tags.map((tag, tagIndex) => (
-                                    <span key={tagIndex} className={`inline-block ${tag.color} rounded-full px-2 py-1 text-xs text-gray-800 mr-1`}>
-                                        {tag.name}
-                                    </span>
-                                ))}
-                            </div>
-                            <button onClick={() => handleDeleteTask(index)} className="text-red-500">Delete</button>
-                        </li>
-                    ))}
-                </ul>
-
-                <hr className="w-full my-3 border-2 border-[#F4ECE5]" />
-
-                <p className="ml-8 mt-10">Completed,</p>
-                <ul className="ml-8">
-                    {tasks.filter(task => task.completed).map((task, index) => (
-                        <li key={index} className="flex items-center justify-between">
-                            <label className="flex items-center">
-                                <input 
-                                    type="checkbox" 
-                                    checked={task.completed} 
-                                    onChange={() => handleToggleTask(index)} 
-                                />
-                                <span className="ml-3.5">{task.text} (Due: {new Date(task.dueDate).toLocaleString()})</span>
-                            </label>
-                            <div>
-                                {task.tags.map((tag, tagIndex) => (
-                                    <span key={tagIndex} className={`inline-block ${tag.color} rounded-full px-2 py-1 text-xs text-gray-800 mr-1`}>
-                                        {tag.name}
-                                    </span>
-                                ))}
-                            </div>
-                            <button onClick={() => handleDeleteTask(index)} className="text-red-500">Delete</button>
-                        </li>
-                    ))}
-                </ul>
+      <div className="mt-8 space-y-8">
+        <TaskSection title="Upcoming" tasks={tasks.filter(task => !task.completed)} />
+        <TaskSection title="Completed" tasks={tasks.filter(task => task.completed)} />
+      </div>
+    </div>
             </div>
         </div>
-    );
-}
+    )}
+
+    function TaskSection({ title, tasks }: { title: string; tasks: Task[] }) {
+        return (
+          <section>
+            <h2 className="font-semibold mb-4">{title}</h2>
+            <div className="space-y-2">
+              {tasks.map((task, index) => (
+                <TaskItem key={index} task={task} />
+              ))}
+            </div>
+          </section>
+        )
+      }
+      
+function TaskItem({ task }: { task: Task }) {
+        return (
+          <div className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="flex items-center gap-4">
+              <input type="checkbox" className="form-checkbox" checked={task.completed} />
+              <div>
+                <p className={task.completed ? "line-through text-muted-foreground" : ""}>{task.text}</p>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(task.dueDate).toLocaleString()}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <span className="bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs">
+                {task.tag}
+              </span>
+            </div>
+
+          </div>
+        )
+      }
