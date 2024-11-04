@@ -47,7 +47,7 @@ export default function Diary() {
                         particleSrc="https://i.postimg.cc/Gt0NqnXJ/inLove.png" 
                         imageSize={120}
                         date="21" 
-                        buttonText="In Love"
+                        buttonText="InLove"
                     />
                 </div>
             </div>

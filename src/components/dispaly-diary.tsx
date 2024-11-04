@@ -18,10 +18,10 @@ export default function DisplayDiary({ date }: DisplayDiaryProps) {
   const { data, isLoading, error } = useDateDiary(date);
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const emotion = searchParams.get('emotion') || 'Unknown Emotion';
-  console.log(emotion);
+  const searchParams = useSearchParams();
+  const mood = searchParams.get('emotion') || 'Unknown Emotion';
+  console.log(mood);
 
   // Update selectedEmotions when data.emotions changes
   useEffect(() => {
@@ -41,14 +41,15 @@ export default function DisplayDiary({ date }: DisplayDiaryProps) {
 
   }
 
-  const moodImage = `@/app/img/${emotion}.png`
+  const moodImage = `@/app/img/${mood}.png`
+  console.log(moodImage);
 
   return (
     <div className="flex flex-col gap-4 px-10 py-10 w-full">
       <div className="grid grid-cols-3 gap-4 h-full">
         <div className="bg-[#F4ECE5] rounded-md flex justify-center items-center gap-4 p-5">
           <Image src={moodImage} alt="mood" width={200} height={200} />
-          <p className="text-2xl font-semibold p-5">{emotion}</p>
+          <p className="text-2xl font-semibold p-5">{mood}</p>
         </div>
         <div className="bg-[#F4ECE5] col-span-2 p-5 h-full flex flex-col">
           <p className="text-3xl font-medium mb-4">Emotions</p>
