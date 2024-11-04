@@ -58,8 +58,7 @@ export default function SignUpPage() {
   });
 
   async function onSignUpSubmit(values: TSignUpSchema): Promise<void> {
-    try {
-      
+    try {      
       const signUpData = {
         username: values.username,
         password: values.password,
@@ -68,6 +67,7 @@ export default function SignUpPage() {
       console.log(signUpData);
       console.log(typeof(signUpData.profile_image));
       await registerUser(signUpData)
+      router.replace('/login')
     } catch (error) {
       console.error(error);
     }
@@ -99,7 +99,7 @@ export default function SignUpPage() {
                   id="username"
                   {...register("username")}
                   type="text"
-                  placeholder="Enter your username"
+                  placeholder="Enter your username (3 characters)"
                   className=" placeholder:text-arom_brown"
                 />
               </div>
@@ -121,7 +121,7 @@ export default function SignUpPage() {
                   id="password"
                   {...register("password")}
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Enter your password (8 characters)"
                   className=" placeholder:text-arom_brown"
                 />
               </div>
