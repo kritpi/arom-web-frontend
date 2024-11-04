@@ -36,12 +36,6 @@ const initialLists = [
 export default function TaskSidebar() {
   const [isHasToken, setIsHasToken] = React.useState(false)
   const [userData, setUserData] = React.useState<any>()
-  const [lists, setLists] = React.useState([
-    { name: 'Design Engineering'},
-    { name: 'Sales & Marketing'},
-    { name: 'Travel'},
-  ])
-  const [newListName, setNewListName] = React.useState('')
   const [selectedColor, setSelectedColor] = React.useState('#F1BFB9')
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [newTagName, setNewTagName] = useState("");
@@ -57,15 +51,6 @@ export default function TaskSidebar() {
     }
   }, [])
 
-  const addListItem = () => {
-    if (newListName) {
-      setLists([...lists, { name: newListName}])
-      setNewListName('')
-      setSelectedColor('#F1BFB9')
-      setIsDialogOpen(false)
-    }
-  }
-
   const addTagItem = () => {
     if (newTagName) {
         setTags([...tags, { name: newTagName, color: selectedColor }]);
@@ -78,53 +63,6 @@ export default function TaskSidebar() {
   return (
     <Sidebar className="border-r bg-[#F4ECE5] h-screen pt-5" collapsible="none">
       <SidebarContent>
-        <SidebarGroup>
-          <div className="flex items-center justify-between">
-            <SidebarGroupLabel>
-              <h2 className="text-xl text-black ">List</h2>
-            </SidebarGroupLabel>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} >
-              <DialogTrigger asChild>
-                <SidebarGroupAction>
-                  <Plus className="h-4 w-4" />
-                  <span className="sr-only">Add Project</span>
-                </SidebarGroupAction>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="flex justify-center text-2xl">Add List</DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-2">
-                  <div className="grid gap-5">
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      value={newListName}
-                      onChange={(e) => setNewListName(e.target.value)}
-                      className="w-full rounded-md border px-3 py-2"
-                    />
-                    <div className='flex justify-center '>
-                      <button onClick={addListItem} className="rounded-md bg-primary w-[100px] h-[30px] text-primary-foreground">
-                        Add 
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {lists.map((list) => (
-                <SidebarMenuItem key={list.name}>
-                  <SidebarMenuButton className="w-full justify-start">
-                    {list.name}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
         <SidebarGroup>
           <div className="flex items-center justify-between">
             <SidebarGroupLabel>
@@ -146,12 +84,12 @@ export default function TaskSidebar() {
                     <input
                       type="text"
                       placeholder="Name"
-                      value={newListName}
-                      onChange={(e) => setNewListName(e.target.value)}
+                      value={newTagName}
+                      onChange={(e) => setNewTagName(e.target.value)}
                       className="w-full rounded-md border px-3 py-2"
                     />
                     <div className='flex justify-center '>
-                      <button onClick={addListItem} className="rounded-md bg-primary w-[100px] h-[30px] text-primary-foreground">
+                      <button onClick={addTagItem} className="rounded-md bg-primary w-[100px] h-[30px] text-primary-foreground">
                         Add 
                       </button>
                     </div>
@@ -160,12 +98,12 @@ export default function TaskSidebar() {
               </DialogContent>
             </Dialog>
           </div>
-          <SidebarGroupContent>
+          <SidebarGroupContent className='pt-5'>
             <SidebarMenu>
-              {lists.map((list) => (
-                <SidebarMenuItem key={list.name}>
-                  <SidebarMenuButton className="w-full justify-start">
-                    {list.name}
+              {tags.map((tag) => (
+                <SidebarMenuItem key={tag.name}>
+                  <SidebarMenuButton className="w-full justify-start p-2">
+                    {tag.name}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
