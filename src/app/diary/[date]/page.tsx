@@ -12,7 +12,7 @@ import {
 import { Button } from "@nextui-org/button";
 import useDateDiary from "@/api/diary/useDateDiary";
 import useCreateDiary from "@/api/diary/useCreateDiary";
-import DisplaDiary from "@/components/dispaly-diary";
+import DisplaDiary from "@/components/display-diary";
 
 export default function DiaryPage() {
   const [date, setDate] = useState<Date>(new Date()); //input date

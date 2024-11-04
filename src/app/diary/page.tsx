@@ -33,10 +33,10 @@ export default function Diary() {
         return <div>Loading...</div>;
       }
 
-        // if (data && checkEdit != "true") {
-        //     router.push(`/diary/display`)
-        //     return 0
-        // }
+        if (data && checkEdit != "true") {
+            router.push(`/diary/display`)
+            return 0
+        }
   return (
     <div>
         <div className="flex justify-center">

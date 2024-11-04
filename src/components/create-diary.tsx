@@ -68,9 +68,6 @@ export default function CreateDiary({ date, mood }: CreateDiaryProps) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error loading diary data</div>;
-  }
 
   const onSubmit = async () => {
     const new_diary = {
@@ -83,6 +80,7 @@ export default function CreateDiary({ date, mood }: CreateDiaryProps) {
     try {
       console.log(new_diary);
       await createDiary.mutateAsync(new_diary);
+      
       router.push("/diary/display");
       console.log(new_diary);
     } catch (err) {

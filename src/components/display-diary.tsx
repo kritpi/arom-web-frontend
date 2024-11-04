@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Divide } from "lucide-react";
+import {Divider} from "@nextui-org/divider";
 import MoodCardDisplay from "./mood-card-display";
 
 interface DisplayDiaryProps {
@@ -44,7 +44,7 @@ export default function DisplayDiary({ date }: DisplayDiaryProps) {
   } else if (error) {
     return (
       <>
-        <Divide className="w-full " />
+        <Divider className="w-full " />
         <div className="w-full text-gray-500 text-center">
           ไม่มีการบันทึกไดอารี่ในวันที่กำหนด
         </div>
