@@ -1,107 +1,275 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useState } from "react";
-import { EventComponent } from "@/components/event-component";
-import { TodoComponent } from "@/components/todo-component";
-import { DiaryComponent } from "@/components/diary-component";
-import { Event, Todo, Diary, CalendarItem } from "../../../type/types";
+import { jwtDecode } from "jwt-decode";
+import Image, { StaticImageData } from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, Circle } from "lucide-react";
+
+// Importing mood images
+import Happy from "@/app/img/Happy.png";
+import SoSo from "@/app/img/SoSo.png";
+import InLove from "@/app/img/inLove.png";
+import Sad from "@/app/img/Sad.png";
+import Silly from "@/app/img/Silly.png";
+import Anxious from "@/app/img/Anxious.png";
+import Angry from "@/app/img/Angry.png";
+
+// Type definitions
+interface CalendarItem {
+  id: string;
+  date: Date;
+  type: "task" | "diary";
+  title?: string;
+  start: Date;
+  end: Date;
+}
+
+interface Task extends CalendarItem {
+  description: string;
+  complete: boolean;
+  tag: string;
+  user_id: string;
+}
+
+interface Diary extends CalendarItem {
+  mood: "Happy" | "So So" | "In Love" | "Sad" | "Silly" | "Anxious" | "Angry";
+  emotions: string[];
+  description: string;
+  user_id: string;
+}
+
+const moodImages: { [key in Diary["mood"]]: StaticImageData } = {
+  Happy: Happy,
+  "So So": SoSo,
+  "In Love": InLove,
+  Sad: Sad,
+  Silly: Silly,
+  Anxious: Anxious,
+  Angry: Angry,
+};
 
 const localizer = momentLocalizer(moment);
 
-const events: Event[] = [
-  {
-    id: "1",
-    title: "Meeting with Team",
-    start: new Date("2024-11-16 14:30"),
-    end: new Date("2024-11-16 16:00"),
-    description: "Discuss project progress",
-    color: "green",
-    type: "event",
-  },
-  {
-    id: "2",
-    title: "Conference Call",
-    start: new Date("2024-11-11 10:00"),
-    end: new Date("2024-11-12 11:30"),
-    description: "Call with international partners",
-    color: "purple",
-    type: "event",
-  },
-];
+const TodoComponent = ({ task }: { task: Task }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
-const todos: Todo[] = [
-  {
-    id: "1",
-    title: "Prepare Presentation",
-    description: "Create slides for the upcoming meeting",
-    complete: false,
-    dueDate: new Date("2024-11-13"),
-    tag: "work",
-    type: "todo",
-  },
-  {
-    id: "2",
-    title: "Review Documents",
-    description: "Go through the project documentation",
-    complete: true,
-    dueDate: new Date("2024-11-08"),
-    tag: "work",
-    type: "todo",
-  },
-];
-
-const diaries: Diary[] = [
-  {
-    id: "1",
-    mood: "Sad",
-    title: "Mood of today",
-    description: "What a sad day here",
-    date: new Date("2024-11-10"),
-    type: "diary",
-  },
-];
-
-const formatItems = (items: any[]): CalendarItem[] => {
-  return items.map((item) => ({
-    ...item,
-    title: item.title || "No Title", // Ensure a title for all items
-    start: item.type === "event" ? new Date(item.start) : new Date(item.date),
-    end: item.type === "event" ? new Date(item.end) : new Date(item.date),
-  }));
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <div
+          className={`h-full w-full rounded-md p-1 text-xs font-medium shadow-sm cursor-pointer flex items-center ${
+            task.complete
+              ? "bg-green-100 text-green-600"
+              : "bg-yellow-100 text-yellow-800"
+          }`}
+          onClick={() => setIsOpen(true)}
+        >
+          {task.complete ? (
+            <CheckCircle2 className="mr-1 h-3 w-3" aria-hidden="true" />
+          ) : (
+            <Circle className="mr-1 h-3 w-3" aria-hidden="true" />
+          )}
+          <span className="truncate">{task.title}</span>
+        </div>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[90vw] md:max-w-[600px] max-h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">{task.title}</DialogTitle>
+        </DialogHeader>
+        <ScrollArea className="flex-grow">
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-[18px] font-medium">Description:</span>
+              <span className="col-span-3 text-[18px] break-words">
+                {task.description}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <span className="text-[18px] font-medium">Due Date:</span>
+              <span className="col-span-3 text-[18px]">
+                {task.end.toLocaleDateString()}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <span className="text-[18px] font-medium">Status:</span>
+              <span
+                className={`col-span-3 text-[18px] font-medium ${
+                  task.complete ? "text-green-600" : "text-yellow-600"
+                } capitalize`}
+              >
+                {task.complete ? "Completed" : "Incomplete"}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-[18px] font-medium">Tag:</span>
+              <Badge
+                className={
+                  task.complete
+                    ? "bg-green-100 text-green-800 text-base w-fit"
+                    : "bg-yellow-100 text-yellow-800 text-base w-fit"
+                }
+              >
+                {task.tag}
+              </Badge>
+            </div>
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
-const CalendarItemWrapper = ({
-  event,
-}: {
-  event: CalendarItem | undefined;
-}) => {
-  if (!event) return null; // Ensure the event exists
+const DiaryComponent = ({ diary }: { diary: Diary }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const imageSrc = moodImages[diary.mood] || "/img/default.png";
 
-  if (event.type === "event") {
-    return <EventComponent event={event} />;
-  } else if (event.type === "todo") {
-    // return <TodoComponent todo={event} />;
-    return <TodoComponent todo={event} />;
-  } else if (event.type === "diary") {
-    return <DiaryComponent diary={event} />;
-  }
-  return null;
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Image
+          src={imageSrc}
+          width={80}
+          height={80}
+          alt={`Mood: ${diary.mood}`}
+          className="cursor-pointer"
+        />
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[90vw] md:max-w-[600px] max-h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">
+            Your Mood on {diary.date.toLocaleDateString()}
+          </DialogTitle>
+        </DialogHeader>
+        <ScrollArea className="flex-grow">
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-[18px] font-medium">Mood:</span>
+              <span className="col-span-3 text-[18px] font-medium capitalize">
+                {diary.mood}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-[18px] font-medium">Description:</span>
+              <span className="col-span-3 text-[18px] break-words">
+                {diary.description}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <span className="text-[18px] font-medium">Emotions:</span>
+              <div className="col-span-3 flex flex-wrap gap-2">
+                {diary.emotions.map((emotion, index) => (
+                  <Badge
+                    key={index}
+                    className="bg-yellow-500 hover:bg-yellow-400 text-base"
+                  >
+                    {emotion}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
-export default function Component() {
+const CalendarItemWrapper = ({ event }: { event: CalendarItem }) => {
+  if (!event) return null;
+
+  return event.type === "task" ? (
+    <TodoComponent task={event as Task} />
+  ) : event.type === "diary" ? (
+    <DiaryComponent diary={event as Diary} />
+  ) : null;
+};
+
+const formatItems = (
+  items: (CalendarItem | Diary | Task)[]
+): CalendarItem[] => {
+  return items.map((item) => {
+    if (item.type === "task") {
+      return {
+        ...item,
+        title: (item as Task).title || "No Title",
+        start: new Date(item.date),
+        end: new Date(item.date),
+      } as CalendarItem;
+    } else if (item.type === "diary") {
+      return {
+        ...item,
+        date: new Date(item.date),
+        start: new Date(item.date),
+        end: new Date(item.date),
+      } as CalendarItem;
+    }
+    return item as CalendarItem;
+  });
+};
+
+export default function CalendarPage() {
+  const [userData, setUserData] = useState<any>();
   const [view, setView] = useState<(typeof Views)[keyof typeof Views]>(
     Views.MONTH
   );
   const [date, setDate] = useState(new Date());
+  const [items, setItems] = useState<(Diary | Task)[]>([]);
 
-  console.log(view);
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserData(decodedToken);
+    }
+  }, []);
 
-  const allItems = formatItems([...events, ...todos, ...diaries]);
-  console.log(allItems);
+  useEffect(() => {
+    if (userData?.user_id) {
+      // Fetch tasks and diaries here
+      // For demonstration, we'll use mock data
+      const mockItems: (Diary | Task)[] = [
+        {
+          id: "1",
+          title: "Complete project",
+          description: "Finish the React project",
+          complete: false,
+          start: new Date(2024, 10, 1),
+          end: new Date(2024, 10, 1),
+          tag: "work",
+          type: "task",
+          user_id: userData.user_id,
+          date: new Date(2024, 10, 1),
+        },
+        {
+          id: "2",
+          date: new Date(2024, 10, 5),
+          mood: "Happy",
+          emotions: ["excited", "energetic"],
+          description: "Had a great day!",
+          type: "diary",
+          user_id: userData.user_id,
+          start: new Date(2024, 10, 5),
+          end: new Date(2024, 10, 5),
+        },
+      ];
+      setItems(mockItems);
+    }
+  }, [userData]);
+
+  const allItems = formatItems(items);
+
   return (
     <div className="h-[800px] w-full p-4 font-sans">
       <style jsx global>{`
@@ -153,27 +321,15 @@ export default function Component() {
       <Calendar
         localizer={localizer}
         events={allItems}
-        startAccessor={(event) =>
-          event.type === "event"
-            ? event.start
-            : event.type === "diary"
-            ? event.date
-            : new Date()
-        }
-        endAccessor={(event) =>
-          event.type === "event"
-            ? event.end
-            : event.type === "diary"
-            ? event.date
-            : new Date()
-        }
+        startAccessor="start"
+        endAccessor="end"
         style={{ height: "100%" }}
         components={{ event: CalendarItemWrapper }}
         views={[Views.MONTH, Views.WEEK]}
-        defaultView="month"
+        defaultView={Views.MONTH}
         view={view}
         date={date}
-        onView={setView}
+        onView={(newView) => setView(newView)}
         onNavigate={setDate}
         toolbar={true}
       />

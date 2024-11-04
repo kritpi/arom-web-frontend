@@ -3,29 +3,45 @@ export type Event = {
   title: string;
   start: Date;
   end: Date;
-  description: string;  
-  color: "pink" | "lightGreen" | "yellow" | "purple" | "red" | "blue" | "orange" | "green" | "brown";
+  description: string;
+  color:
+    | "pink"
+    | "lightGreen"
+    | "yellow"
+    | "purple"
+    | "red"
+    | "blue"
+    | "orange"
+    | "green"
+    | "brown";
   type: "event";
 };
 
-export type Todo = {
+export type Task = {
   id: string;
   title: string;
   description: string;
   complete: boolean;
-  dueDate: Date;
-  tag: string //personal, work, etc.
-  type: "todo";
+  start: Date;
+  end: Date;
+  tag: string; //personal, work, etc.
+  type: "task";
+  user_id: string;
 };
 
 export type Diary = {
   id: string;
-  mood: "Happy" | "So So" | "In Love" | "Sad" | "Silly" | "Anxious" |"Angry"
-  // emotion: string[]; // Array of many options like "overwhelm", "anxious", etc.
-  title: string;
-  description: string;
   date: Date;
-  type: "diary";
+  mood: "Happy" | "So So" | "In Love" | "Sad" | "Silly" | "Anxious" | "Angry";
+  emotions: string[];
+  description: string;
+  type: string;
+  user_id: string;
 };
 
-export type CalendarItem = Event | Todo | Diary;
+export interface CalendarItem {
+  id: string;
+  date: Date;
+  type: "task" | "diary";
+  title?: string;
+}
