@@ -1,6 +1,6 @@
 'use client';
 import useCreateDiary from "@/api/diary/useCreateDiary";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import useDateDiary from "@/api/diary/useDateDiary";
 import { Button } from "@nextui-org/button";
 import { ToggleGroup, ToggleGroupItem } from "@radix-ui/react-toggle-group";
@@ -9,6 +9,8 @@ import Image from "next/image";
 import { MoodCard } from "./mood-card";
 import { CreateDiary as CreateType } from "@/interface/Diary";
 import useUpdateDiaries from "@/api/diary/useUpdate";
+import { jwtDecode } from "jwt-decode";
+import useUserIdDiary from "@/api/diary/useUserIdDiary";
 
 interface CreateDiaryProps {
   mood: string;
@@ -26,11 +28,26 @@ const moodImages: { [key: string]: string } = {
 };
 
 export default function CreateDiary({ date, mood }: CreateDiaryProps) {
+  const [isHasToken, setIsHasToken] = useState(false);
+  const [userData, setUserData] = useState<any>()
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      setIsHasToken(true);
+      setUserData(jwtDecode(token))
+      console.log(token);
+      console.log(userData);
+    } else {
+      setIsHasToken(false);
+    }
+  }, [setIsHasToken]);
   const router = useRouter();
   const createDiary = useCreateDiary();
   const updateDiary = useUpdateDiaries();
 
-  const { data, isLoading, error } = useDateDiary(date);
+  const { data:diaries, isLoading, error } = useUserIdDiary(userData?.user_id);
+  const data = diaries?.find((item) => item.date ===  `${date}T00:00:00Z`);
   const [typeFunc, setTypeFunc] = useState<boolean>(false);
 
   const [emotions, setEmotions] = useState<string[]>([]);
@@ -41,7 +58,7 @@ export default function CreateDiary({ date, mood }: CreateDiaryProps) {
     mood: mood,
     emotions: [],
     description: "",
-    userId: "",
+    user_id: "",
   });
   const [moodImage, setMoodImage] = useState<string>(moodImages[mood]);
 
@@ -75,12 +92,12 @@ export default function CreateDiary({ date, mood }: CreateDiaryProps) {
       mood: moodSet,
       emotions: emotions,
       description: description,
-      userId: "",
+      user_id: userData?.user_id,
     };
     try {
       console.log(new_diary);
       await createDiary.mutateAsync(new_diary);
-      
+
       router.push("/diary/display");
       console.log(new_diary);
     } catch (err) {
@@ -94,7 +111,7 @@ export default function CreateDiary({ date, mood }: CreateDiaryProps) {
       mood: moodSet,
       emotions: emotions,
       description: description,
-      userId: "",
+      user_id: userData?.user_id,
     };
 
     try {

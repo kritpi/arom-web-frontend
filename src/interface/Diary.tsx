@@ -5,7 +5,7 @@ export interface Diary {
     emotions: string[];
     description: string;
     type: string;
-    userId: string;
+    user_id: string;
     }
 
 export interface CreateDiary {
@@ -13,5 +13,5 @@ export interface CreateDiary {
     mood: string;
     emotions: string[];
     description: string;
-    userId: string;
+    user_id: string;
     }

@@ -12,10 +12,28 @@ import Silly from '@/app/img/Silly.png'
 import Anxious from '@/app/img/Anxious.png'
 import Angry from '@/app/img/Angry.png'
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useDateDiary from "@/api/diary/useDateDiary";
+import { jwtDecode } from "jwt-decode";
+import useUserIdDiary from "@/api/diary/useUserIdDiary";
 
 export default function Diary() {
+    const [isHasToken, setIsHasToken] = useState(false);
+    const [userData, setUserData] = useState<any>()
+  
+    useEffect(() => {
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        setIsHasToken(true);
+        setUserData(jwtDecode(token))
+        console.log(token);
+        console.log(userData);
+      } else {
+        setIsHasToken(false);
+      }
+    }, [setIsHasToken]);
+
+    console.log(userData);
     const [date, setDate] = useState<Date>(new Date());
     const searchParams = useSearchParams();
     const checkEdit = searchParams.get("edit");
@@ -28,15 +46,18 @@ export default function Diary() {
       }).format(date).replace(/(\d{4})-(\d{2})-(\d{2})/, "$1-$2-$3")
     const router = useRouter();
      //input date
-    const { data, isLoading, error } = useDateDiary(formattedDate);
-      if (isLoading) {
+    const { data:diary, isLoading, error } = useUserIdDiary(userData?.user_id);
+    if (isLoading) {
         return <div>Loading...</div>;
       }
-
-        if (data && checkEdit != "true") {
-            router.push(`/diary/display`)
+    diary?.map((item) => {
+        if (item.date === formattedDate && checkEdit != "true") {
+            router.push(`/diary/display?date=${formattedDate}&edit=true`)
             return 0
         }
+    }
+    )
+
   return (
     <div>
         <div className="flex justify-center">
