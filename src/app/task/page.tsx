@@ -1,217 +1,79 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, X } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { jwtDecode } from "jwt-decode";
+import { Task, CreateTask } from "@/interface/Task";
+import useCreateTask from "@/api/event/useCreateTask";
+import useUserIdTask from "@/api/event/useUserIdTask";
+import { useRouter } from "next/navigation";
+import { AddTask } from "@/components/create-task";
 
 type TagType = "Personal" | "Work" | "Study" | "All";
-
-interface Task {
-  id: number;
-  text: string;
-  description: string;
-  completed: boolean;
-  startDate: string;
-  endDate: string;
-  tag: Exclude<TagType, "All">;
-}
 
 const tagColor = "bg-arom_brown hover:bg-arom_brown";
 
 export default function TaskPage() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [descriptionValue, setDescriptionValue] = useState("");
-  const [startDateValue, setStartDateValue] = useState("");
-  const [startTimeValue, setStartTimeValue] = useState("");
-  const [endDateValue, setEndDateValue] = useState("");
-  const [endTimeValue, setEndTimeValue] = useState("");
-  const [selectedTag, setSelectedTag] =
-    useState<Exclude<TagType, "All">>("Personal");
   const [filterTag, setFilterTag] = useState<TagType>("All");
+  const [userData, setUserData] = useState<any>(null);
+  const [isHasToken, setIsHasToken] = useState(false);
 
-  const handleAddTask = () => {
-    if (
-      inputValue.trim() &&
-      startDateValue &&
-      startTimeValue &&
-      endDateValue &&
-      endTimeValue
-    ) {
-      const startDateTime = `${startDateValue}T${startTimeValue}`;
-      const endDateTime = `${endDateValue}T${endTimeValue}`;
-      setTasks([
-        ...tasks,
-        {
-          id: Date.now(),
-          text: inputValue,
-          description: descriptionValue,
-          completed: false,
-          startDate: startDateTime,
-          endDate: endDateTime,
-          tag: selectedTag,
-        },
-      ]);
-      setOpen(false);
-      resetForm();
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      setIsHasToken(true);
+      setUserData(jwtDecode(token));
+    } else {
+      setIsHasToken(false);
+    }
+  }, []);
+
+  const createTask = useCreateTask();
+  const {
+    data: tasks = [],
+    isLoading,
+    error,
+  } = useUserIdTask(userData?.user_id);
+  const router = useRouter();
+
+  const handleAddTask = async (newTask: CreateTask) => {
+    try {
+      await createTask.mutateAsync(newTask);
+      router.push("/task");
+    } catch (err) {
+      console.error("Failed to create task:", err);
     }
   };
 
-  const resetForm = () => {
-    setInputValue("");
-    setDescriptionValue("");
-    setStartDateValue("");
-    setStartTimeValue("");
-    setEndDateValue("");
-    setEndTimeValue("");
-    setSelectedTag("Personal");
-  };
-
-  const toggleTaskCompletion = (taskId: number) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
+  const toggleTaskCompletion = async (taskId: string) => {
+    // Implement the logic to update task completion status
+    // This might involve calling an API or updating local state
+    console.log(`Toggling completion for task ${taskId}`);
   };
 
   const filteredTasks = tasks.filter(
-    (task) => filterTag === "All" || task.tag === filterTag
+    (task: Task) => filterTag === "All" || task.tag === filterTag
   );
 
   return (
     <div className="flex w-full p-5">
       <div className="w-full py-[20px]">
         <div className="p-4">
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start text-muted-foreground"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Task
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="text-arom_brown text-xl ">Add New Task</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="task">Task Name</Label>
-                  <Input
-                    id="task"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Enter task name"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={descriptionValue}
-                    onChange={(e) => setDescriptionValue(e.target.value)}
-                    placeholder="Enter task description"
-                    rows={3}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="startDate">Start Date</Label>
-                    <Input
-                      id="startDate"
-                      type="date"
-                      value={startDateValue}
-                      onChange={(e) => setStartDateValue(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="startTime">Start Time</Label>
-                    <Input
-                      id="startTime"
-                      type="time"
-                      value={startTimeValue}
-                      onChange={(e) => setStartTimeValue(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="endDate">End Date</Label>
-                    <Input
-                      id="endDate"
-                      type="date"
-                      value={endDateValue}
-                      onChange={(e) => setEndDateValue(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="endTime">End Time</Label>
-                    <Input
-                      id="endTime"
-                      type="time"
-                      value={endTimeValue}
-                      onChange={(e) => setEndTimeValue(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="tag">Tag</Label>
-                  <Select
-                    value={selectedTag}
-                    onValueChange={(value: Exclude<TagType, "All">) =>
-                      setSelectedTag(value)
-                    }
-                  >
-                    <SelectTrigger id="tag">
-                      <SelectValue placeholder="Select a tag" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Personal">Personal</SelectItem>
-                      <SelectItem value="Work">Work</SelectItem>
-                      <SelectItem value="Study">Study</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <Button className="bg-arom_brown" onClick={handleAddTask}>Add Task</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <AddTask onAddTask={handleAddTask} userId={userData?.user_id} />
 
           <TagFilter currentFilter={filterTag} onFilterChange={setFilterTag} />
 
           <div className="mt-8 space-y-8">
             <TaskSection
               title="Upcoming"
-              tasks={filteredTasks.filter((task) => !task.completed)}
+              tasks={filteredTasks.filter((task: Task) => !task.complete)}
               toggleTaskCompletion={toggleTaskCompletion}
             />
             <TaskSection
               title="Completed"
-              tasks={filteredTasks.filter((task) => task.completed)}
+              tasks={filteredTasks.filter((task: Task) => task.complete)}
               toggleTaskCompletion={toggleTaskCompletion}
             />
           </div>
@@ -268,7 +130,7 @@ function TaskSection({
 }: {
   title: string;
   tasks: Task[];
-  toggleTaskCompletion: (taskId: number) => void;
+  toggleTaskCompletion: (taskId: string) => void;
 }) {
   return (
     <section>
@@ -291,7 +153,7 @@ function TaskItem({
   toggleTaskCompletion,
 }: {
   task: Task;
-  toggleTaskCompletion: (taskId: number) => void;
+  toggleTaskCompletion: (taskId: string) => void;
 }) {
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -299,24 +161,24 @@ function TaskItem({
         <input
           type="checkbox"
           className="form-checkbox"
-          checked={task.completed}
+          checked={task.complete}
           onChange={() => toggleTaskCompletion(task.id)}
-          aria-label={`Mark "${task.text}" as ${
-            task.completed ? "incomplete" : "complete"
+          aria-label={`Mark "${task.title}" as ${
+            task.complete ? "incomplete" : "complete"
           }`}
         />
         <div>
           <p
             className={
-              task.completed ? "line-through text-muted-foreground" : ""
+              task.complete ? "line-through text-muted-foreground" : ""
             }
           >
-            {task.text}
+            {task.title}
           </p>
           <p className="text-sm text-muted-foreground">{task.description}</p>
           <p className="text-sm text-muted-foreground">
-            {new Date(task.startDate).toLocaleString()} -{" "}
-            {new Date(task.endDate).toLocaleString()}
+            {new Date(task.start).toLocaleString()} -{" "}
+            {new Date(task.end).toLocaleString()}
           </p>
         </div>
       </div>
