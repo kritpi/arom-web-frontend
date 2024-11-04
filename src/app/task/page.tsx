@@ -12,10 +12,11 @@ import { Plus } from "lucide-react"
 type TagType = 'Personal' | 'Work' | 'Study'
 
 interface Task {
-  text: string
-  completed: boolean
-  dueDate: string
-  tag: TagType
+    id: number
+    text: string
+    completed: boolean
+    dueDate: string
+    tag: TagType
 }
 
 export default function TaskPage() {
@@ -29,18 +30,30 @@ export default function TaskPage() {
     const handleAddTask = () => {
         if (inputValue.trim() && dueDateValue.trim() && dueTimeValue.trim()) {
           const dueDateTime = `${dueDateValue}T${dueTimeValue}`
-          setTasks([...tasks, { text: inputValue, completed: false, dueDate: dueDateTime, tag: selectedTag }])
+          setTasks([...tasks, { 
+            id: Date.now(), 
+            text: inputValue, 
+            completed: false, 
+            dueDate: dueDateTime, 
+            tag: selectedTag 
+          }])
           setOpen(false)
           resetForm()
         }
-      }
+    }
     
-      const resetForm = () => {
+    const resetForm = () => {
         setInputValue("")
         setDueDateValue("")
         setDueTimeValue("")
         setSelectedTag('Personal')
-      }
+    }
+
+    const toggleTaskCompletion = (taskId: number) => {
+        setTasks(tasks.map(task => 
+            task.id === taskId ? { ...task, completed: !task.completed } : task
+    ))
+    }
 
     return (
         <div className="flex w-full ">
@@ -113,45 +126,64 @@ export default function TaskPage() {
       </Dialog>
 
       <div className="mt-8 space-y-8">
-        <TaskSection title="Upcoming" tasks={tasks.filter(task => !task.completed)} />
-        <TaskSection title="Completed" tasks={tasks.filter(task => task.completed)} />
+        <TaskSection 
+            title="Upcoming" 
+            tasks={tasks.filter(task => !task.completed)} 
+            toggleTaskCompletion={toggleTaskCompletion}
+        />
+        <TaskSection 
+            title="Completed" 
+            tasks={tasks.filter(task => task.completed)} 
+            toggleTaskCompletion={toggleTaskCompletion}
+        />
       </div>
     </div>
             </div>
         </div>
     )}
 
-    function TaskSection({ title, tasks }: { title: string; tasks: Task[] }) {
+    function TaskSection({ title, tasks, toggleTaskCompletion }: { 
+        title: string; 
+        tasks: Task[]; 
+        toggleTaskCompletion: (taskId: number) => void 
+    }) {
         return (
           <section>
             <h2 className="font-semibold mb-4">{title}</h2>
             <div className="space-y-2">
               {tasks.map((task, index) => (
-                <TaskItem key={index} task={task} />
+                <TaskItem key={index} task={task} toggleTaskCompletion={toggleTaskCompletion} />
               ))}
             </div>
           </section>
         )
       }
       
-function TaskItem({ task }: { task: Task }) {
-        return (
-          <div className="flex items-center justify-between p-4 border rounded-lg">
+function TaskItem({ task, toggleTaskCompletion }: { 
+    task: Task; 
+    toggleTaskCompletion: (taskId: number) => void 
+}) {
+    return (
+        <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="flex items-center gap-4">
-              <input type="checkbox" className="form-checkbox" checked={task.completed} />
-              <div>
-                <p className={task.completed ? "line-through text-muted-foreground" : ""}>{task.text}</p>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(task.dueDate).toLocaleString()}
-                </p>
-              </div>
+                <input 
+                    type="checkbox" 
+                    className="form-checkbox" 
+                    checked={task.completed} 
+                    onChange={() => toggleTaskCompletion(task.id)}
+                />
+                <div>
+                    <p className={task.completed ? "line-through text-muted-foreground" : ""}>{task.text}</p>
+                    <p className="text-sm text-muted-foreground">
+                        {new Date(task.dueDate).toLocaleString()}
+                    </p>
+                </div>
             </div>
             <div className="flex gap-2">
-              <span className="bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs">
-                {task.tag}
-              </span>
+                <span className="bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs">
+                    {task.tag}
+                </span>
             </div>
-
-          </div>
-        )
-      }
+        </div>
+    )
+}
