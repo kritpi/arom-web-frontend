@@ -16,6 +16,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Circle } from "lucide-react";
+import useUserIdDiary from "@/api/diary/useUserIdDiary";
 
 // Importing mood images
 import Happy from "@/app/img/Happy.png";
@@ -25,12 +26,12 @@ import Sad from "@/app/img/Sad.png";
 import Silly from "@/app/img/Silly.png";
 import Anxious from "@/app/img/Anxious.png";
 import Angry from "@/app/img/Angry.png";
+import useUserIdTask from "@/api/event/useUserIdTask";
 
 // Type definitions
 interface CalendarItem {
-  id: string;
-  date: Date;
-  type: "task" | "diary";
+  id: string;  
+  type: "event" | "diary";
   title?: string;
   start: Date;
   end: Date;
@@ -44,7 +45,8 @@ interface Task extends CalendarItem {
 }
 
 interface Diary extends CalendarItem {
-  mood: "Happy" | "So So" | "In Love" | "Sad" | "Silly" | "Anxious" | "Angry";
+  mood: "Happy" | "SoSo" | "InLove" | "Sad" | "Silly" | "Anxious" | "Angry";
+  date: Date;
   emotions: string[];
   description: string;
   user_id: string;
@@ -52,8 +54,8 @@ interface Diary extends CalendarItem {
 
 const moodImages: { [key in Diary["mood"]]: StaticImageData } = {
   Happy: Happy,
-  "So So": SoSo,
-  "In Love": InLove,
+  SoSo: SoSo,
+  InLove: InLove,
   Sad: Sad,
   Silly: Silly,
   Anxious: Anxious,
@@ -189,7 +191,7 @@ const DiaryComponent = ({ diary }: { diary: Diary }) => {
 const CalendarItemWrapper = ({ event }: { event: CalendarItem }) => {
   if (!event) return null;
 
-  return event.type === "task" ? (
+  return event.type === "event" ? (
     <TodoComponent task={event as Task} />
   ) : event.type === "diary" ? (
     <DiaryComponent diary={event as Diary} />
@@ -200,19 +202,18 @@ const formatItems = (
   items: (CalendarItem | Diary | Task)[]
 ): CalendarItem[] => {
   return items.map((item) => {
-    if (item.type === "task") {
+    if (item.type === "event") {
       return {
         ...item,
         title: (item as Task).title || "No Title",
-        start: new Date(item.date),
-        end: new Date(item.date),
+        start: new Date(item.start),
+        end: new Date(item.end),
       } as CalendarItem;
     } else if (item.type === "diary") {
       return {
         ...item,
-        date: new Date(item.date),
-        start: new Date(item.date),
-        end: new Date(item.date),
+        start: new Date(item.start),
+        end: new Date(item.end),
       } as CalendarItem;
     }
     return item as CalendarItem;
@@ -235,38 +236,74 @@ export default function CalendarPage() {
     }
   }, []);
 
+  const {
+    data: diaries,
+    isLoading: diaryLoading,
+    error,
+  } = useUserIdDiary(userData?.user_id);
+
+  const {
+    data: tasks,
+    isLoading: taskLoading,
+    error: taskError,
+  } = useUserIdTask(userData?.user_id)
+
   useEffect(() => {
-    if (userData?.user_id) {
-      // Fetch tasks and diaries here
-      // For demonstration, we'll use mock data
-      const mockItems: (Diary | Task)[] = [
-        {
-          id: "1",
-          title: "Complete project",
-          description: "Finish the React project",
-          complete: false,
-          start: new Date(2024, 10, 1),
-          end: new Date(2024, 10, 1),
-          tag: "work",
-          type: "task",
-          user_id: userData.user_id,
-          date: new Date(2024, 10, 1),
-        },
-        {
-          id: "2",
-          date: new Date(2024, 10, 5),
-          mood: "Happy",
-          emotions: ["excited", "energetic"],
-          description: "Had a great day!",
-          type: "diary",
-          user_id: userData.user_id,
-          start: new Date(2024, 10, 5),
-          end: new Date(2024, 10, 5),
-        },
-      ];
-      setItems(mockItems);
+    if (!diaryLoading && diaries) {
+      console.log(diaries);
     }
-  }, [userData]);
+    if (!taskLoading && tasks) {
+      console.log(tasks);
+    }
+  }, [diaryLoading, diaries, taskLoading, tasks]);
+
+  console.log(userData);
+
+  useEffect(() => {
+    const mockItems: (Diary | Task)[] = [];
+  
+    if (diaries) {
+      diaries.forEach((item) => {
+        mockItems.push({
+          ...item,
+          id: item.id,
+          date: new Date(item.date),
+          mood: item.mood as "Happy" | "SoSo" | "InLove" | "Sad" | "Silly" | "Anxious" | "Angry",
+          emotions: item.emotions,
+          description: item.description,
+          type: "diary",
+          user_id: item.user_id,
+          start: new Date(item.date),
+          end: new Date(item.date),
+        });
+      });
+    }
+    
+    if (tasks) {
+      tasks.forEach((item) => {
+        mockItems.push({
+          ...item,
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          complete: item.complete,
+          
+          start: new Date(item.start),
+          end: new Date(item.end),
+          tag: item.tag,
+          type: "event",
+          user_id: item.user_id,
+        })
+      })
+    }
+  
+    setItems(mockItems);
+  }, [userData, diaries]);
+  
+
+  
+
+  
 
   const allItems = formatItems(items);
 
