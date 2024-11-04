@@ -25,13 +25,15 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from '@/components/ui/sidebar'
-
+import HomeIcon from "@/app/img/Home.png";
+import WorkIcon from "@/app/img/Work.png";
+import LoveIcon from "@/app/img/Heart.png";
 
 const initialLists = [
-  { name: 'Personal', color: '#E2CCBC' },
-  { name: 'Work', color: '#E2CCBC'},
-  { name: 'Love', color: '#E2CCBC'},
-]
+  {name: "Personal", color:"#E2CCBC", icon: HomeIcon},
+  {name: "Work", color:"#E2CCBC", icon: WorkIcon},
+  {name: "Study", color:"#E2CCBC", icon: LoveIcon},
+];
 
 export default function TaskSidebar() {
   const [isHasToken, setIsHasToken] = React.useState(false)
@@ -39,7 +41,7 @@ export default function TaskSidebar() {
   const [selectedColor, setSelectedColor] = React.useState('#F1BFB9')
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [newTagName, setNewTagName] = useState("");
-  const [tags, setTags] = useState([{name:"Tag1", color: "#F1BFB9"}]);
+  const [tags, setTags] = useState([]);
   
   React.useEffect(() => {
     const token = localStorage.getItem('jwtToken')
@@ -51,14 +53,7 @@ export default function TaskSidebar() {
     }
   }, [])
 
-  const addTagItem = () => {
-    if (newTagName) {
-        setTags([...tags, { name: newTagName, color: selectedColor }]);
-        setNewTagName("");
-        setSelectedColor("#F1BFB9");
-        setIsDialogOpen(false)
-    }
-};
+
 
   return (
     <Sidebar className="border-r bg-[#F4ECE5] h-screen pt-5" collapsible="none">
@@ -89,7 +84,7 @@ export default function TaskSidebar() {
                       className="w-full rounded-md border px-3 py-2"
                     />
                     <div className='flex justify-center '>
-                      <button onClick={addTagItem} className="rounded-md bg-primary w-[100px] h-[30px] text-primary-foreground">
+                      <button  className="rounded-md bg-primary w-[100px] h-[30px] text-primary-foreground">
                         Add 
                       </button>
                     </div>
@@ -100,13 +95,14 @@ export default function TaskSidebar() {
           </div>
           <SidebarGroupContent className='pt-5'>
             <SidebarMenu>
-              {tags.map((tag) => (
-                <SidebarMenuItem key={tag.name}>
-                  <SidebarMenuButton className="w-full justify-start p-2">
-                    {tag.name}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+            {initialLists.map((item, index) => (
+                    <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton className="w-full justify-start p-2">
+                      {item.name}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+            ))}
+
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
