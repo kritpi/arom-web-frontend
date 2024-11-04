@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import Task2Sidebar from '@/components/task2-sidebar';
+import TaskSidebar from '@/components/task-sidebar';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface Tag {
@@ -103,7 +103,7 @@ export default function TaskPage() {
         <div className="flex w-full ">
             <div>
                 <SidebarProvider defaultOpen={true}>
-                    <Task2Sidebar />
+                    <TaskSidebar />
                 </SidebarProvider>
             </div>
             <div className="w-full py-[20px]">
