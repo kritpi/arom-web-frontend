@@ -4,7 +4,6 @@ import { Kanit } from "next/font/google";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
-import { cookies } from "next/headers";
 import QueryClientProvider from "@/lib/react-query/QueryClientProvider";
 
 const kanit = Kanit({
@@ -24,15 +23,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
+  
+
+  const defaultOpen = "true";
 
   return (
     <html lang="en">
       <body className={kanit.className}>
         <div>
           <QueryClientProvider>
-            <SidebarProvider defaultOpen={defaultOpen}>
+            <SidebarProvider defaultOpen={true} >
             <AppSidebar />
               <main className="px-[60px] h-screen w-screen bg-arom_white">
                 <Providers>{children}</Providers>

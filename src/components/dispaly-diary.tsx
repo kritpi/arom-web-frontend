@@ -19,6 +19,7 @@ export default function DisplayDiary({ date }: DisplayDiaryProps) {
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const emotion = searchParams.get('emotion') || 'Unknown Emotion';
   console.log(emotion);
 
@@ -27,6 +28,9 @@ export default function DisplayDiary({ date }: DisplayDiaryProps) {
     if (data?.emotions) {
       setSelectedEmotions(data.emotions);
     }
+    console.log(date);
+    
+    
   }, [data]);
 
   if (isLoading) {
