@@ -37,7 +37,7 @@ export default function Diary() {
                         particleSrc="https://i.postimg.cc/4NLWM27s/SoSo.png" 
                         imageSize={90}
                         date="21" 
-                        buttonText="So So"
+                        buttonText="SoSo"
                     />
                 </div>
                 <div className="flex justify-start">

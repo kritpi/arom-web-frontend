@@ -22,7 +22,7 @@ export default function EmotionButton({
 }: EmotionButtonProps) {
   const router = useRouter();
 
-  const navigateTo = `/diary/${date}?emotion=${encodeURIComponent(buttonText)}`;
+  const navigateTo = `/diary/${date}?emotion=${buttonText}`;
   const handleNavigation = () => {
     router.push(navigateTo);
   };
@@ -38,7 +38,7 @@ export default function EmotionButton({
           <Image src={imageSrc} alt={altText} width={imageSize} height={imageSize} />
         </button>
       </CoolMode>
-      <p className="mt-5 font-semibold text-xl">{buttonText}</p> 
+      <p className="mt-10 font-semibold text-xl">{buttonText}</p> 
     </div>
   );
 }

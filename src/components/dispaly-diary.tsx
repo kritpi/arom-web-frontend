@@ -7,25 +7,20 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import CreateDiary from "./create-diary";
+import { useSearchParams } from 'next/navigation';
 
 interface DisplayDiaryProps {
   date: string;
 }
 
-const moodImages: { [key: string]: string } = {
-  Angry: require("@/app/img/Angry.png"),
-  Anxious: require("@/app/img/Anxious.png"),
-  Happy: require("@/app/img/Happy.png"),
-  InLove: require("@/app/img/InLove.png"),
-  Sad: require("@/app/img/Sad.png"),
-  Silly: require("@/app/img/Silly.png"),
-  SoSo: require("@/app/img/SoSo.png"),
-};
 
 export default function DisplayDiary({ date }: DisplayDiaryProps) {
   const { data, isLoading, error } = useDateDiary(date);
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const emotion = searchParams.get('emotion') || 'Unknown Emotion';
+  console.log(emotion);
 
   // Update selectedEmotions when data.emotions changes
   useEffect(() => {
@@ -42,14 +37,14 @@ export default function DisplayDiary({ date }: DisplayDiaryProps) {
 
   }
 
-  const moodImage = data?.mood ? moodImages[data.mood] : "";
+  const moodImage = `@/app/img/${emotion}.png`
 
   return (
     <div className="flex flex-col gap-4 px-10 py-10 w-full">
       <div className="grid grid-cols-3 gap-4 h-full">
         <div className="bg-[#F4ECE5] rounded-md flex justify-center items-center gap-4 p-5">
           <Image src={moodImage} alt="mood" width={200} height={200} />
-          <p className="text-2xl font-semibold p-5">{data?.mood}</p>
+          <p className="text-2xl font-semibold p-5">{emotion}</p>
         </div>
         <div className="bg-[#F4ECE5] col-span-2 p-5 h-full flex flex-col">
           <p className="text-3xl font-medium mb-4">Emotions</p>
