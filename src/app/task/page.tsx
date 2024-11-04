@@ -1,18 +1,19 @@
 'use client'
 
 import { useState } from 'react';
-import { TaskSidebar } from "@/components/task-sidebar";
+import Task2Sidebar from '@/components/task2-sidebar';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface Tag {
     name: string;
-    color: string; // Color class for the tag
+    color: string; 
 }
 
 interface Task {
     text: string;
     completed: boolean;
     dueDate: string;
-    tags: Tag[]; // Array of tags
+    tags: Tag[]; 
 }
 
 export default function TaskPage() {
@@ -40,9 +41,9 @@ export default function TaskPage() {
             setInputValue('');
             setDueDateValue('');
             setDueTimeValue('');
-            setSelectedTags([]); // Clear selected tags after adding task
-            setTagInputValue(''); // Clear tag input
-            setTagColor('bg-blue-200'); // Reset color to default
+            setSelectedTags([]); 
+            setTagInputValue(''); 
+            setTagColor('bg-blue-200'); 
         }
     };
 
@@ -99,11 +100,13 @@ export default function TaskPage() {
     };
 
     return (
-        <div className="flex w-full">
-            <div className="w-[200px]">
-                <TaskSidebar />
+        <div className="flex w-full ">
+            <div>
+                <SidebarProvider defaultOpen={true}>
+                    <Task2Sidebar />
+                </SidebarProvider>
             </div>
-            <div className="w-full">
+            <div className="w-full py-[20px]">
                 <input 
                     type="text" 
                     value={inputValue} 

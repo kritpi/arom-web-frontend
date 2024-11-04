@@ -2,14 +2,12 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  SidebarInset 
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { Calendar, Home, Search, FolderCheck } from "lucide-react";
@@ -50,8 +48,8 @@ export function AppSidebar() {
     }
   }, [setIsHasToken]);
   return (
-    <Sidebar>
-      <div className="bg-[#FFFCF9] h-full">
+    <SidebarInset className="flex-1 " >
+      <div className=" bg-[#F9F4ED] w-[200px] h-full">
         <SidebarHeader>
           <div className="flex justify-center">
             <Image src={AROMImage} width={150} height={80} alt="AROM" />
@@ -65,7 +63,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="hover:bg-[#E9DBD1] text-arom_brown  focus:bg-[#E9DBD1]"
+                    className="hover:bg-[#E9DBD1] text-xl text-arom_brown  focus:bg-[#E9DBD1]"
                   >
                     <a href={item.url}>
                       <item.icon />
@@ -80,7 +78,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton
                   asChild
-                  className="hover:bg-[#E9DBD1] text-arom_brown focus:bg-[#E9DBD1]"
+                  className="hover:bg-[#E9DBD1] text-xl text-arom_brown focus:bg-[#E9DBD1]"
                   onClick={() => {
                     localStorage.removeItem("jwtToken");
                     setIsHasToken(false);
@@ -96,7 +94,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton
                   asChild
-                  className="hover:bg-[#E9DBD1] text-arom_brown focus:bg-[#E9DBD1]"
+                  className="hover:bg-[#E9DBD1] text-xl  text-arom_brown focus:bg-[#E9DBD1] justify-center"
                   >
                   <a href="/login">
                     <span>Log in</span>
@@ -109,6 +107,6 @@ export function AppSidebar() {
         </SidebarContent>
         <SidebarFooter />
       </div>
-    </Sidebar>
+    </SidebarInset>
   );
 }

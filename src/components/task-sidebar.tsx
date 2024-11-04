@@ -185,12 +185,6 @@ export function TaskSidebar() {
                         className="flex items-center justify-center w-7 h-7 mr-2 rounded-full" 
                         style={{ backgroundColor: item.color }}
                     >
-                        <Image 
-                            src={TagIcon}
-                            alt={`Tag icon`} 
-                            width={20} 
-                            height={20}
-                        />
                     </div>
                     {item.name}
                 </li>
