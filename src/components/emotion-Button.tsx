@@ -22,7 +22,7 @@ export default function EmotionButton({
 }: EmotionButtonProps) {
   const router = useRouter();
 
-  const navigateTo = `/diary/${date}?emotion=${buttonText}`;
+  const navigateTo = `/diary/create/?mood=${buttonText}`;
   const handleNavigation = () => {
     router.push(navigateTo);
   };

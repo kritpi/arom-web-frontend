@@ -11,8 +11,32 @@ import Sad from '@/app/img/Sad.png'
 import Silly from '@/app/img/Silly.png'
 import Anxious from '@/app/img/Anxious.png'
 import Angry from '@/app/img/Angry.png'
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import useDateDiary from "@/api/diary/useDateDiary";
 
 export default function Diary() {
+    const [date, setDate] = useState<Date>(new Date());
+    const searchParams = useSearchParams();
+    const checkEdit = searchParams.get("edit");
+    console.log(checkEdit);
+    const formattedDate = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Bangkok",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(date).replace(/(\d{4})-(\d{2})-(\d{2})/, "$1-$2-$3")
+    const router = useRouter();
+     //input date
+    const { data, isLoading, error } = useDateDiary(formattedDate);
+      if (isLoading) {
+        return <div>Loading...</div>;
+      }
+
+        // if (data && checkEdit != "true") {
+        //     router.push(`/diary/display`)
+        //     return 0
+        // }
   return (
     <div>
         <div className="flex justify-center">
