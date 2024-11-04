@@ -63,9 +63,10 @@ export default function SignUpPage() {
       const signUpData = {
         username: values.username,
         password: values.password,
-        profileImage: values.profileImage
+        profile_image: values.profileImage
       }
       console.log(signUpData);
+      console.log(typeof(signUpData.profile_image));
       await registerUser(signUpData)
     } catch (error) {
       console.error(error);

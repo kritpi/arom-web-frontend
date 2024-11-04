@@ -9,4 +9,3 @@ export const register = async (newUser: any) => {
   });
   return data;
 };
-
