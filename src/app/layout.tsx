@@ -30,14 +30,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={kanit.className}>
-        <div>
+        <div className="bg-arom_white min-h-screen">
           <QueryClientProvider>
-            <SidebarProvider defaultOpen={true} >
-            <AppSidebar />
-              <main className="h-screen w-screen bg-arom_white">
-                <Providers>{children}</Providers>
-              </main>
-            </SidebarProvider>
+          {children}
           </QueryClientProvider>
         </div>
       </body>
